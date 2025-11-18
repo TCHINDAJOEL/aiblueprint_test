@@ -1,12 +1,12 @@
-# Symlink Command Workflow
+# Workflow de création de liens symboliques
 
-This diagram illustrates the symlink workflow for sharing commands/agents between different AI CLI tools.
+Ce diagramme illustre le workflow de création de liens symboliques pour partager des commandes/agents entre différents outils CLI d'IA.
 
 ```mermaid
 flowchart TD
-    Start([User runs: aiblueprint claude-code symlink]) --> SelectSource[Interactive: Select Source Tool]
+    Start([L'utilisateur exécute: aiblueprint claude-code symlink]) --> SelectSource[Interactif: Sélectionner l'outil source]
 
-    SelectSource --> SourceOptions{Source Tool<br/>Selection}
+    SelectSource --> SourceOptions{Sélection de l'outil<br/>source}
 
     SourceOptions --> ClaudeCode[Claude Code<br/>~/.claude/]
     SourceOptions --> Codex[Codex<br/>~/.codex/prompts]
@@ -18,43 +18,43 @@ flowchart TD
     OpenCode --> SelectContent
     FactoryAI --> SelectContent
 
-    SelectContent{Select Content Type}
+    SelectContent{Sélectionner le type de contenu}
 
-    SelectContent --> Commands[Commands Only]
-    SelectContent --> Agents[Agents Only<br/>if supported]
-    SelectContent --> Both[Both Commands + Agents]
+    SelectContent --> Commands[Commandes uniquement]
+    SelectContent --> Agents[Agents uniquement<br/>si supporté]
+    SelectContent --> Both[Commandes + Agents]
 
     Commands --> SelectDest
     Agents --> SelectDest
     Both --> SelectDest
 
-    SelectDest[Multi-Select: Choose Destination Tools] --> DestCheck{For Each<br/>Destination}
+    SelectDest[Multi-sélection: Choisir les outils de destination] --> DestCheck{Pour chaque<br/>destination}
 
-    DestCheck --> ValidatePath{Destination<br/>Path Valid?}
+    DestCheck --> ValidatePath{Chemin de destination<br/>valide?}
 
-    ValidatePath -->|No| Skip[Skip this destination<br/>Log warning]
-    ValidatePath -->|Yes| CheckExist{Target Directory<br/>Exists?}
+    ValidatePath -->|Non| Skip[Ignorer cette destination<br/>Logger un avertissement]
+    ValidatePath -->|Oui| CheckExist{Le répertoire cible<br/>existe?}
 
-    CheckExist -->|No| CreateSymlink
-    CheckExist -->|Yes| IsSymlink{Already a<br/>Symlink?}
+    CheckExist -->|Non| CreateSymlink
+    CheckExist -->|Oui| IsSymlink{Déjà un<br/>lien symbolique?}
 
-    IsSymlink -->|Yes| SkipExist[Skip: Already symlinked]
-    IsSymlink -->|No| PromptReplace{Prompt:<br/>Replace with symlink?}
+    IsSymlink -->|Oui| SkipExist[Ignorer: Déjà lié]
+    IsSymlink -->|Non| PromptReplace{Demander:<br/>Remplacer par un lien symbolique?}
 
-    PromptReplace -->|No| SkipManual[Skip: Keep existing directory]
-    PromptReplace -->|Yes| Backup[Backup existing directory<br/>dirname.backup]
+    PromptReplace -->|Non| SkipManual[Ignorer: Garder le répertoire existant]
+    PromptReplace -->|Oui| Backup[Sauvegarder le répertoire existant<br/>dirname.backup]
 
-    Backup --> CreateSymlink[Create Symlink:<br/>ln -s source target]
+    Backup --> CreateSymlink[Créer le lien symbolique:<br/>ln -s source target]
 
-    CreateSymlink --> NextDest{More<br/>Destinations?}
+    CreateSymlink --> NextDest{Plus de<br/>destinations?}
     Skip --> NextDest
     SkipExist --> NextDest
     SkipManual --> NextDest
 
-    NextDest -->|Yes| DestCheck
-    NextDest -->|No| Report[Generate Summary Report:<br/>- Created: X<br/>- Skipped: Y<br/>- Failed: Z]
+    NextDest -->|Oui| DestCheck
+    NextDest -->|Non| Report[Générer le rapport récapitulatif:<br/>- Créés: X<br/>- Ignorés: Y<br/>- Échoués: Z]
 
-    Report --> Success([✅ Symlink Operation Complete])
+    Report --> Success([✅ Opération de lien symbolique terminée])
 
     style Start fill:#e1f5ff
     style Success fill:#d4edda
@@ -62,48 +62,48 @@ flowchart TD
     style Backup fill:#fff3cd
 ```
 
-## Supported Tools
+## Outils supportés
 
-### Source & Destination Options
+### Options de source et de destination
 
-| Tool | Commands Path | Agents Path | Support |
+| Outil | Chemin des commandes | Chemin des agents | Support |
 |------|--------------|-------------|---------|
-| **Claude Code** | `~/.claude/commands/` | `~/.claude/agents/` | Full |
-| **Codex** | `~/.codex/prompts` | N/A | Commands Only |
-| **OpenCode** | `~/.config/opencode/command` | N/A | Commands Only |
-| **FactoryAI** | `~/.factory/commands/` | `~/.factory/droids/` | Full |
+| **Claude Code** | `~/.claude/commands/` | `~/.claude/agents/` | Complet |
+| **Codex** | `~/.codex/prompts` | N/A | Commandes uniquement |
+| **OpenCode** | `~/.config/opencode/command` | N/A | Commandes uniquement |
+| **FactoryAI** | `~/.factory/commands/` | `~/.factory/droids/` | Complet |
 
-## Symlink Strategy
+## Stratégie de liens symboliques
 
-### Benefits
-- **Single Source of Truth**: Update commands in one place
-- **Cross-Tool Compatibility**: Use same commands across different AI CLIs
-- **Easy Maintenance**: Changes propagate automatically
+### Avantages
+- **Source unique de vérité**: Mettre à jour les commandes en un seul endroit
+- **Compatibilité inter-outils**: Utiliser les mêmes commandes sur différents CLI d'IA
+- **Maintenance facile**: Les changements se propagent automatiquement
 
-### Safety Checks
-1. Validates all paths before creating symlinks
-2. Detects existing non-symlink directories
-3. Offers backup before replacement
-4. Skips invalid destinations gracefully
+### Vérifications de sécurité
+1. Valide tous les chemins avant de créer des liens symboliques
+2. Détecte les répertoires existants non-symboliques
+3. Propose une sauvegarde avant le remplacement
+4. Ignore les destinations invalides de manière élégante
 
-### Example Use Case
+### Exemple de cas d'usage
 
-Share Claude Code commands with Codex:
+Partager les commandes Claude Code avec Codex:
 ```bash
 aiblueprint claude-code symlink
-# Select: Claude Code (source)
-# Select: Commands
-# Select: Codex (destination)
-# Result: ~/.codex/prompts -> ~/.claude/commands
+# Sélectionner: Claude Code (source)
+# Sélectionner: Commandes
+# Sélectionner: Codex (destination)
+# Résultat: ~/.codex/prompts -> ~/.claude/commands
 ```
 
-## Related Files
+## Fichiers associés
 
 - Source: `src/commands/symlink.ts`
-- Path Utilities: `src/utils/claude-config.ts`
+- Utilitaires de chemins: `src/utils/claude-config.ts`
 
-## Important Notes
+## Notes importantes
 
-- Symlinks are bidirectional (can sync from any tool to any other)
-- Agent support depends on tool capabilities
-- Custom folder paths can be specified via CLI options
+- Les liens symboliques sont bidirectionnels (peuvent synchroniser de n'importe quel outil vers n'importe quel autre)
+- Le support des agents dépend des capacités de l'outil
+- Des chemins de dossier personnalisés peuvent être spécifiés via les options CLI

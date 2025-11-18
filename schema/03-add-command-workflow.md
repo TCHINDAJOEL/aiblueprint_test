@@ -1,48 +1,48 @@
-# Add Command Workflow
+# Workflow d'ajout de commande
 
-This diagram illustrates the add command workflow for installing individual Claude Code commands.
+Ce diagramme illustre le workflow de la commande d'ajout pour installer des commandes Claude Code individuelles.
 
 ```mermaid
 flowchart TD
-    Start([User runs: aiblueprint claude-code add commands]) --> HasArg{Command Name<br/>Specified?}
+    Start([L'utilisateur exécute: aiblueprint claude-code add commands]) --> HasArg{Nom de commande<br/>spécifié?}
 
-    HasArg -->|No| ListMode[List Mode:<br/>Show all available commands]
-    HasArg -->|Yes| InstallMode[Install Mode:<br/>Install specific command]
+    HasArg -->|Non| ListMode[Mode liste:<br/>Afficher toutes les commandes disponibles]
+    HasArg -->|Oui| InstallMode[Mode installation:<br/>Installer une commande spécifique]
 
-    ListMode --> FetchList{Fetch Command List}
+    ListMode --> FetchList{Récupérer la liste des commandes}
 
-    FetchList --> GHList{GitHub<br/>Available?}
+    FetchList --> GHList{GitHub<br/>disponible?}
 
-    GHList -->|Yes| ListGH[List from GitHub API<br/>github.com/api/contents/commands]
-    GHList -->|No| ListLocal[List from Local<br/>claude-code-config/commands/]
+    GHList -->|Oui| ListGH[Lister depuis l'API GitHub<br/>github.com/api/contents/commands]
+    GHList -->|Non| ListLocal[Lister depuis les fichiers locaux<br/>claude-code-config/commands/]
 
     ListGH --> ParseMetadata
     ListLocal --> ParseMetadata
 
-    ParseMetadata[Parse YAML Frontmatter<br/>Extract: description, allowed-tools, argument-hint] --> DisplayList[Display Formatted List:<br/>- Command name<br/>- Description<br/>- Usage syntax<br/>- Allowed tools]
+    ParseMetadata[Parser le Frontmatter YAML<br/>Extraire: description, allowed-tools, argument-hint] --> DisplayList[Afficher la liste formatée:<br/>- Nom de la commande<br/>- Description<br/>- Syntaxe d'utilisation<br/>- Outils autorisés]
 
-    DisplayList --> EndList([User can now run install command])
+    DisplayList --> EndList([L'utilisateur peut maintenant exécuter la commande d'installation])
 
-    InstallMode --> ValidateCmd{Valid Command<br/>Name?}
+    InstallMode --> ValidateCmd{Nom de commande<br/>valide?}
 
-    ValidateCmd -->|No| ErrorCmd([❌ Error: Command not found])
-    ValidateCmd -->|Yes| CheckExist{Command File<br/>Already Exists?}
+    ValidateCmd -->|Non| ErrorCmd([❌ Erreur: Commande introuvable])
+    ValidateCmd -->|Oui| CheckExist{Le fichier de commande<br/>existe déjà?}
 
-    CheckExist -->|Yes| PromptOverwrite{Prompt User:<br/>Overwrite existing?}
-    CheckExist -->|No| Download
+    CheckExist -->|Oui| PromptOverwrite{Demander à l'utilisateur:<br/>Écraser l'existant?}
+    CheckExist -->|Non| Download
 
-    PromptOverwrite -->|No| Cancel([❌ Operation Cancelled])
-    PromptOverwrite -->|Yes| Download
+    PromptOverwrite -->|Non| Cancel([❌ Opération annulée])
+    PromptOverwrite -->|Oui| Download
 
-    Download[Download Command] --> GHCheck{GitHub<br/>Available?}
+    Download[Télécharger la commande] --> GHCheck{GitHub<br/>disponible?}
 
-    GHCheck -->|Yes| DownloadGH[Download from GitHub<br/>raw.githubusercontent.com]
-    GHCheck -->|No| UseLocal[Copy from Local<br/>claude-code-config/commands/]
+    GHCheck -->|Oui| DownloadGH[Télécharger depuis GitHub<br/>raw.githubusercontent.com]
+    GHCheck -->|Non| UseLocal[Copier depuis les fichiers locaux<br/>claude-code-config/commands/]
 
-    DownloadGH --> WriteCmd[Write to ~/.claude/commands/]
+    DownloadGH --> WriteCmd[Écrire dans ~/.claude/commands/]
     UseLocal --> WriteCmd
 
-    WriteCmd --> Success([✅ Command Installed<br/>Ready to use: /command-name])
+    WriteCmd --> Success([✅ Commande installée<br/>Prêt à utiliser: /command-name])
 
     style Start fill:#e1f5ff
     style Success fill:#d4edda
@@ -52,48 +52,48 @@ flowchart TD
     style ParseMetadata fill:#d1ecf1
 ```
 
-## Available Commands (16 templates)
+## Commandes disponibles (16 templates)
 
-### Development Workflow
-- `/commit` - Quick conventional commits with auto-push
-- `/create-pull-request` - Create PR with summary and test plan
-- `/fix-pr-comments` - Address PR review comments
-- `/run-tasks` - Execute project tasks efficiently
+### Workflow de développement
+- `/commit` - Commits conventionnels rapides avec auto-push
+- `/create-pull-request` - Créer une PR avec résumé et plan de test
+- `/fix-pr-comments` - Traiter les commentaires de revue de PR
+- `/run-tasks` - Exécuter les tâches du projet efficacement
 
-### Code Analysis
-- `/deep-code-analysis` - Comprehensive code review
-- `/explain-architecture` - Document system architecture
+### Analyse de code
+- `/deep-code-analysis` - Revue de code complète
+- `/explain-architecture` - Documenter l'architecture du système
 
-### Project Management
-- `/claude-memory` - Manage Claude's project memory
-- `/cleanup-context` - Clean up conversation context
+### Gestion de projet
+- `/claude-memory` - Gérer la mémoire de projet de Claude
+- `/cleanup-context` - Nettoyer le contexte de conversation
 
-### Utilities
-- `/epct` - Execute and parallelize complex tasks
-- `/prompt-command` - Generate new command templates
-- `/prompt-agent` - Generate new agent templates
-- `/watch-ci` - Monitor CI/CD pipeline
+### Utilitaires
+- `/epct` - Exécuter et paralléliser des tâches complexes
+- `/prompt-command` - Générer de nouveaux templates de commandes
+- `/prompt-agent` - Générer de nouveaux templates d'agents
+- `/watch-ci` - Surveiller le pipeline CI/CD
 
-### And more...
+### Et plus encore...
 
-## Command Structure
+## Structure de commande
 
-Each command is a Markdown file with:
+Chaque commande est un fichier Markdown avec:
 
 ```markdown
 ---
-description: "Command description"
+description: "Description de la commande"
 allowed-tools: "Bash, Read, Edit"
 argument-hint: "<required-arg> [optional-arg]"
 ---
 
-# Command Instructions
+# Instructions de la commande
 
-[Detailed instructions for Claude...]
+[Instructions détaillées pour Claude...]
 ```
 
-## Related Files
+## Fichiers associés
 
 - Source: `src/commands/addCommand.ts`
-- Commands Directory: `claude-code-config/commands/`
-- Utilities: `src/utils/claude-config.ts` (YAML parsing)
+- Répertoire des commandes: `claude-code-config/commands/`
+- Utilitaires: `src/utils/claude-config.ts` (parsing YAML)

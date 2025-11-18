@@ -1,71 +1,71 @@
-# Setup Command Workflow
+# Workflow de la commande Setup
 
-This diagram illustrates the main setup command workflow for AIBlueprint CLI.
+Ce diagramme illustre le workflow principal de la commande setup pour AIBlueprint CLI.
 
 ```mermaid
 flowchart TD
-    Start([User runs: aiblueprint claude-code setup]) --> CheckSkip{--skip flag?}
+    Start([L'utilisateur exécute: aiblueprint claude-code setup]) --> CheckSkip{Flag --skip ?}
 
-    CheckSkip -->|No| Interactive[Interactive Feature Selection]
-    CheckSkip -->|Yes| AllFeatures[Select All Features]
+    CheckSkip -->|Non| Interactive[Sélection interactive des fonctionnalités]
+    CheckSkip -->|Oui| AllFeatures[Sélectionner toutes les fonctionnalités]
 
-    Interactive --> Features{Selected Features}
+    Interactive --> Features{Fonctionnalités<br/>sélectionnées}
     AllFeatures --> Features
 
-    Features --> GitHub{Check GitHub<br/>Connectivity}
+    Features --> GitHub{Vérifier la<br/>connectivité GitHub}
 
-    GitHub -->|Available| DownloadGH[Download Latest from GitHub<br/>raw.githubusercontent.com]
-    GitHub -->|Unavailable| LocalFallback[Use Local claude-code-config/]
+    GitHub -->|Disponible| DownloadGH[Télécharger depuis GitHub<br/>raw.githubusercontent.com]
+    GitHub -->|Indisponible| LocalFallback[Utiliser le dossier local<br/>claude-code-config/]
 
     DownloadGH --> InstallProcess
     LocalFallback --> InstallProcess
 
-    InstallProcess[Installation Process] --> ShellShortcuts{Shell Shortcuts<br/>Selected?}
+    InstallProcess[Processus d'installation] --> ShellShortcuts{Raccourcis Shell<br/>sélectionnés ?}
 
-    ShellShortcuts -->|Yes| AddAliases[Add cc/ccc aliases to<br/>~/.zshenv or ~/.bashrc]
-    ShellShortcuts -->|No| CommandValidator
+    ShellShortcuts -->|Oui| AddAliases[Ajouter les alias cc/ccc à<br/>~/.zshenv ou ~/.bashrc]
+    ShellShortcuts -->|Non| CommandValidator
 
-    AddAliases --> CommandValidator{Command Validation<br/>Selected?}
+    AddAliases --> CommandValidator{Validation des<br/>commandes sélectionnée ?}
 
-    CommandValidator -->|Yes| InstallValidator[Install command-validator script<br/>+ Add PreToolUse hook]
-    CommandValidator -->|No| CustomStatusline
+    CommandValidator -->|Oui| InstallValidator[Installer le script command-validator<br/>+ Ajouter le hook PreToolUse]
+    CommandValidator -->|Non| CustomStatusline
 
-    InstallValidator --> CustomStatusline{Custom Statusline<br/>Selected?}
+    InstallValidator --> CustomStatusline{Statusline<br/>personnalisée ?}
 
-    CustomStatusline -->|Yes| InstallStatusline[Install statusline script<br/>+ Run bun install<br/>+ Update settings.json]
-    CustomStatusline -->|No| Commands
+    CustomStatusline -->|Oui| InstallStatusline[Installer le script statusline<br/>+ Exécuter bun install<br/>+ Mettre à jour settings.json]
+    CustomStatusline -->|Non| Commands
 
-    InstallStatusline --> CheckDeps[Check & Install Dependencies<br/>bun, ccusage]
+    InstallStatusline --> CheckDeps[Vérifier et installer les dépendances<br/>bun, ccusage]
     CheckDeps --> Commands
 
-    Commands{AIBlueprint Commands<br/>Selected?}
+    Commands{Commandes AIBlueprint<br/>sélectionnées ?}
 
-    Commands -->|Yes| CopyCommands[Copy 16 command templates<br/>to ~/.claude/commands/]
-    Commands -->|No| Agents
+    Commands -->|Oui| CopyCommands[Copier 16 templates de commandes<br/>vers ~/.claude/commands/]
+    Commands -->|Non| Agents
 
-    CopyCommands --> Agents{AIBlueprint Agents<br/>Selected?}
+    CopyCommands --> Agents{Agents AIBlueprint<br/>sélectionnés ?}
 
-    Agents -->|Yes| CopyAgents[Copy 3 agent templates<br/>to ~/.claude/agents/]
-    Agents -->|No| Sounds
+    Agents -->|Oui| CopyAgents[Copier 3 templates d'agents<br/>vers ~/.claude/agents/]
+    Agents -->|Non| Sounds
 
-    CopyAgents --> Sounds{Notification Sounds<br/>Selected?}
+    CopyAgents --> Sounds{Sons de notification<br/>sélectionnés ?}
 
-    Sounds -->|Yes| InstallSounds[Install MP3 files<br/>+ Add Stop/Notification hooks]
-    Sounds -->|No| PostEdit
+    Sounds -->|Oui| InstallSounds[Installer les fichiers MP3<br/>+ Ajouter les hooks Stop/Notification]
+    Sounds -->|Non| PostEdit
 
-    InstallSounds --> PostEdit{Post-Edit TS Hook<br/>Selected?}
+    InstallSounds --> PostEdit{Hook Post-Edit TS<br/>sélectionné ?}
 
-    PostEdit -->|Yes| InstallPostEdit[Install hook-post-file script<br/>+ Add PostToolUse hook]
-    PostEdit -->|No| Symlinks
+    PostEdit -->|Oui| InstallPostEdit[Installer le script hook-post-file<br/>+ Ajouter le hook PostToolUse]
+    PostEdit -->|Non| Symlinks
 
-    InstallPostEdit --> Symlinks{Codex/OpenCode<br/>Symlinks?}
+    InstallPostEdit --> Symlinks{Liens symboliques<br/>Codex/OpenCode ?}
 
-    Symlinks -->|Yes| CreateSymlinks[Create symlinks for<br/>commands/agents]
-    Symlinks -->|No| UpdateSettings
+    Symlinks -->|Oui| CreateSymlinks[Créer les symlinks pour<br/>commandes/agents]
+    Symlinks -->|Non| UpdateSettings
 
-    CreateSymlinks --> UpdateSettings[Update ~/.claude/settings.json<br/>Merge all configurations]
+    CreateSymlinks --> UpdateSettings[Mettre à jour ~/.claude/settings.json<br/>Fusionner toutes les configurations]
 
-    UpdateSettings --> Success([✅ Setup Complete<br/>Show Success Report])
+    UpdateSettings --> Success([✅ Setup terminé<br/>Afficher le rapport de succès])
 
     style Start fill:#e1f5ff
     style Success fill:#d4edda
@@ -74,17 +74,17 @@ flowchart TD
     style LocalFallback fill:#f8d7da
 ```
 
-## Key Points
+## Points clés
 
-1. **Feature Selection**: Interactive prompts (or `--skip` for all)
-2. **Source Priority**: GitHub first, local fallback
-3. **Conditional Installation**: Each feature is installed only if selected
-4. **Settings Merge**: All configurations are merged into existing `settings.json`
-5. **Dependency Check**: Automatically installs `bun` and `ccusage` if needed
+1. **Sélection des fonctionnalités** : Invites interactives (ou `--skip` pour tout sélectionner)
+2. **Priorité des sources** : GitHub en premier, repli local en cas d'échec
+3. **Installation conditionnelle** : Chaque fonctionnalité n'est installée que si elle est sélectionnée
+4. **Fusion des paramètres** : Toutes les configurations sont fusionnées dans le `settings.json` existant
+5. **Vérification des dépendances** : Installe automatiquement `bun` et `ccusage` si nécessaire
 
-## Related Files
+## Fichiers associés
 
-- Source: `src/commands/setup.ts`
-- Settings Handler: `src/commands/setup/settings.ts`
-- GitHub Utils: `src/utils/github.ts`
-- File Installer: `src/utils/file-installer.ts`
+- Source : `src/commands/setup.ts`
+- Gestionnaire de paramètres : `src/commands/setup/settings.ts`
+- Utilitaires GitHub : `src/utils/github.ts`
+- Installateur de fichiers : `src/utils/file-installer.ts`

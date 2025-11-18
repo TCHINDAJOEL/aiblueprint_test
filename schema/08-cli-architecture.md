@@ -1,48 +1,48 @@
-# CLI Architecture
+# Architecture du CLI
 
-This diagram illustrates the overall architecture of the AIBlueprint CLI application.
+Ce diagramme illustre l'architecture globale de l'application CLI AIBlueprint.
 
 ```mermaid
 flowchart TB
-    subgraph Entry["Entry Point"]
-        CLI[src/cli.ts<br/>Commander.js Setup]
+    subgraph Entry["Point d'entrée"]
+        CLI[src/cli.ts<br/>Configuration Commander.js]
     end
 
-    subgraph Commands["Command Layer"]
-        Setup[setup.ts<br/>Main setup workflow]
-        AddHook[addHook.ts<br/>Install hooks]
-        AddCmd[addCommand.ts<br/>Install commands]
-        Symlink[symlink.ts<br/>Cross-tool linking]
-        Pro[pro.ts<br/>Premium features]
-        Status[statusline.ts<br/>Quick statusline install]
+    subgraph Commands["Couche Commande"]
+        Setup[setup.ts<br/>Workflow de configuration principal]
+        AddHook[addHook.ts<br/>Installer les hooks]
+        AddCmd[addCommand.ts<br/>Installer les commandes]
+        Symlink[symlink.ts<br/>Lien inter-outils]
+        Pro[pro.ts<br/>Fonctionnalités premium]
+        Status[statusline.ts<br/>Installation rapide de statusline]
     end
 
-    subgraph Utils["Utility Layer"]
-        GitHub[github.ts<br/>GitHub API client]
-        FileInst[file-installer.ts<br/>Smart file installer]
-        Config[claude-config.ts<br/>Config utilities]
-        SettingsUtil[settings.ts<br/>Settings.json handler]
+    subgraph Utils["Couche Utilitaire"]
+        GitHub[github.ts<br/>Client API GitHub]
+        FileInst[file-installer.ts<br/>Installateur de fichiers intelligent]
+        Config[claude-config.ts<br/>Utilitaires de config]
+        SettingsUtil[settings.ts<br/>Gestionnaire settings.json]
     end
 
-    subgraph External["External Services"]
-        GHRepo[GitHub Repository<br/>raw.githubusercontent.com]
-        PremiumRepo[Premium Repo<br/>Private GitHub]
-        CodelineAPI[Codeline API<br/>codeline.app/api]
-        ClaudeAPI[Claude API<br/>api.claude.ai]
+    subgraph External["Services Externes"]
+        GHRepo[Dépôt GitHub<br/>raw.githubusercontent.com]
+        PremiumRepo[Dépôt Premium<br/>GitHub privé]
+        CodelineAPI[API Codeline<br/>codeline.app/api]
+        ClaudeAPI[API Claude<br/>api.claude.ai]
     end
 
-    subgraph Templates["Configuration Templates"]
-        CmdTemplates[commands/<br/>16 command templates]
-        AgentTemplates[agents/<br/>3 agent templates]
+    subgraph Templates["Templates de configuration"]
+        CmdTemplates[commands/<br/>16 templates de commandes]
+        AgentTemplates[agents/<br/>3 templates d'agents]
         Scripts[scripts/<br/>- command-validator<br/>- statusline<br/>- hooks]
-        Sounds[sounds/<br/>MP3 notification files]
+        Sounds[sounds/<br/>Fichiers MP3 de notification]
     end
 
-    subgraph Target["Installation Targets"]
-        GlobalClaude[~/.claude/<br/>Global configuration]
-        ProjectClaude[.claude/<br/>Project configuration]
+    subgraph Target["Cibles d'installation"]
+        GlobalClaude[~/.claude/<br/>Configuration globale]
+        ProjectClaude[.claude/<br/>Configuration de projet]
         Settings[settings.json<br/>Hooks & statusline]
-        Shell[Shell Config<br/>.zshenv, .bashrc]
+        Shell[Config Shell<br/>.zshenv, .bashrc]
     end
 
     CLI --> Setup
@@ -87,19 +87,19 @@ flowchart TB
     style Target fill:#d4edda
 ```
 
-## Architecture Layers
+## Couches d'architecture
 
-### 1. Entry Point Layer
+### 1. Couche Point d'entrée
 
-**File**: `src/cli.ts`
+**Fichier**: `src/cli.ts`
 
-**Responsibilities**:
-- Parse command-line arguments
-- Set up Commander.js command structure
-- Handle global options
-- Route to appropriate command handler
+**Responsabilités**:
+- Parser les arguments de ligne de commande
+- Configurer la structure de commande Commander.js
+- Gérer les options globales
+- Router vers le gestionnaire de commande approprié
 
-**Command Structure**:
+**Structure de commande**:
 ```
 aiblueprint claude-code [options]
 ├── setup
@@ -115,270 +115,270 @@ aiblueprint claude-code [options]
     └── update
 ```
 
-### 2. Command Layer
+### 2. Couche Commande
 
-Each command is a separate module with specific responsibilities:
+Chaque commande est un module séparé avec des responsabilités spécifiques:
 
 #### setup.ts
-- Interactive feature selection
-- Batch installation of all features
-- Dependency management
-- Settings.json configuration
+- Sélection interactive de fonctionnalités
+- Installation par lot de toutes les fonctionnalités
+- Gestion des dépendances
+- Configuration de settings.json
 
 #### addHook.ts
-- Individual hook installation
-- Project vs global detection
-- Hook configuration in settings
+- Installation de hook individuel
+- Détection projet vs global
+- Configuration de hook dans settings
 
 #### addCommand.ts
-- Command discovery and listing
-- Individual command installation
-- Metadata parsing (YAML frontmatter)
+- Découverte et liste de commandes
+- Installation de commande individuelle
+- Parsing des métadonnées (frontmatter YAML)
 
 #### symlink.ts
-- Cross-tool command/agent sharing
-- Symlink creation and validation
-- Multi-destination support
+- Partage de commandes/agents inter-outils
+- Création et validation de liens symboliques
+- Support multi-destinations
 
 #### pro.ts
-- Premium token management
-- Premium config installation
-- API authentication
+- Gestion des tokens premium
+- Installation de config premium
+- Authentification API
 
 #### statusline.ts
-- Standalone statusline installer
-- Quick setup without full installation
+- Installateur de statusline autonome
+- Configuration rapide sans installation complète
 
-### 3. Utility Layer
+### 3. Couche Utilitaire
 
 #### github.ts
-**Functions**:
-- `isGitHubAvailable()`: Test connectivity
-- `downloadFromGitHub()`: Fetch file content
-- `listFilesFromGitHub()`: List directory contents
-- `downloadAndWriteFile()`: Download + write to disk
+**Fonctions**:
+- `isGitHubAvailable()`: Tester la connectivité
+- `downloadFromGitHub()`: Récupérer le contenu de fichier
+- `listFilesFromGitHub()`: Lister le contenu de répertoire
+- `downloadAndWriteFile()`: Télécharger + écrire sur disque
 
 #### file-installer.ts
-**Smart Fallback Logic**:
-1. Try GitHub first
-2. Fall back to local `claude-code-config/`
-3. Search multiple possible local paths
-4. Handle errors gracefully
+**Logique de repli intelligente**:
+1. Essayer GitHub d'abord
+2. Se replier sur local `claude-code-config/`
+3. Chercher plusieurs chemins locaux possibles
+4. Gérer les erreurs avec élégance
 
 #### claude-config.ts
-**Functions**:
-- `getTargetDirectory()`: Determine `.claude/` location
-- `findLocalConfigDir()`: Find local config source
-- `parseYamlFrontmatter()`: Extract command metadata
+**Fonctions**:
+- `getTargetDirectory()`: Déterminer l'emplacement `.claude/`
+- `findLocalConfigDir()`: Trouver la source de config locale
+- `parseYamlFrontmatter()`: Extraire les métadonnées de commande
 
 #### settings.ts
-**Settings Management**:
-- Read existing `settings.json`
-- Merge new configurations
-- Preserve user customizations
-- Validate structure
+**Gestion des paramètres**:
+- Lire le `settings.json` existant
+- Fusionner les nouvelles configurations
+- Préserver les personnalisations utilisateur
+- Valider la structure
 
-### 4. Configuration Templates
+### 4. Templates de configuration
 
-Stored in `claude-code-config/`:
+Stockés dans `claude-code-config/`:
 
-#### Commands (16 templates)
-- `/commit`: Quick commits
-- `/create-pull-request`: PR creation
-- `/deep-code-analysis`: Code review
+#### Commandes (16 templates)
+- `/commit`: Commits rapides
+- `/create-pull-request`: Création de PR
+- `/deep-code-analysis`: Revue de code
 - `/explain-architecture`: Documentation
-- And 12 more...
+- Et 12 autres...
 
 #### Agents (3 templates)
-- `action`: Conditional executor
-- `prompt-agent`: Agent generator
-- `prompt-command`: Command generator
+- `action`: Exécuteur conditionnel
+- `prompt-agent`: Générateur d'agent
+- `prompt-command`: Générateur de commande
 
 #### Scripts
-- **command-validator**: 700+ line security system
-- **statusline**: Real-time metrics display
-- **hook-post-file**: TypeScript post-edit validation
+- **command-validator**: Système de sécurité de 700+ lignes
+- **statusline**: Affichage de métriques en temps réel
+- **hook-post-file**: Validation TypeScript post-édition
 
 #### Sounds
-- MP3 notification files for various events
+- Fichiers MP3 de notification pour divers événements
 
-### 5. Installation Targets
+### 5. Cibles d'installation
 
-#### Global Configuration
-**Path**: `~/.claude/`
+#### Configuration globale
+**Chemin**: `~/.claude/`
 
-**Contents**:
-- Commands directory
-- Agents directory
-- Scripts directory
+**Contenu**:
+- Répertoire des commandes
+- Répertoire des agents
+- Répertoire des scripts
 - Settings.json
 - Security.log
 
-#### Project Configuration
-**Path**: `.claude/` (in git repo)
+#### Configuration de projet
+**Chemin**: `.claude/` (dans le dépôt git)
 
-**Contents**:
-- Project-specific hooks
-- Project-specific commands
-- Uses `$CLAUDE_PROJECT_DIR`
+**Contenu**:
+- Hooks spécifiques au projet
+- Commandes spécifiques au projet
+- Utilise `$CLAUDE_PROJECT_DIR`
 
-#### Shell Configuration
-**Paths**:
+#### Configuration Shell
+**Chemins**:
 - macOS: `~/.zshenv`
 - Linux: `~/.bashrc`, `~/.zshrc`
 
-**Content**:
+**Contenu**:
 ```bash
 alias cc='claude --dangerouslySkipPermissions'
 alias ccc='cc --continue'
 ```
 
-## Data Flow Patterns
+## Flux de données
 
-### Installation Flow
+### Flux d'installation
 ```
-User Command
-  → CLI Parser
-  → Command Handler
-  → GitHub Check
-  → [Download from GitHub] OR [Use Local Templates]
-  → Write to Target Directory
-  → Update settings.json
-  → Success Report
-```
-
-### Hook Execution Flow
-```
-Claude Code Event
-  → Hook Trigger
-  → Bun Script Execution
-  → Read stdin (JSON input)
-  → Process data
-  → Write stdout (result)
-  → Claude Code Continues/Blocks
+Commande utilisateur
+  → Parser CLI
+  → Gestionnaire de commande
+  → Vérification GitHub
+  → [Télécharger depuis GitHub] OU [Utiliser templates locaux]
+  → Écrire dans répertoire cible
+  → Mettre à jour settings.json
+  → Rapport de succès
 ```
 
-### Premium Authentication Flow
+### Flux d'exécution de hook
 ```
-User Token
-  → Codeline API Validation
-  → Extract GitHub Token
-  → Save to Local Config
-  → Use for Private Repo Access
-  → Download Premium Configs
+Événement Claude Code
+  → Déclenchement du hook
+  → Exécution du script Bun
+  → Lire stdin (entrée JSON)
+  → Traiter les données
+  → Écrire stdout (résultat)
+  → Claude Code continue/bloque
 ```
 
-## Dependencies
+### Flux d'authentification premium
+```
+Token utilisateur
+  → Validation API Codeline
+  → Extraire le token GitHub
+  → Sauvegarder dans config locale
+  → Utiliser pour accès dépôt privé
+  → Télécharger configs premium
+```
+
+## Dépendances
 
 ### Runtime
-- **commander**: CLI framework
-- **@clack/prompts**: Interactive prompts
-- **fs-extra**: File operations
-- **chalk**: Terminal colors
+- **commander**: Framework CLI
+- **@clack/prompts**: Prompts interactifs
+- **fs-extra**: Opérations de fichiers
+- **chalk**: Couleurs de terminal
 
-### External Tools
-- **bun**: Script execution
-- **ccusage**: Cost tracking
-- **git**: Repository detection
-- **gh**: GitHub CLI (optional)
+### Outils externes
+- **bun**: Exécution de scripts
+- **ccusage**: Suivi des coûts
+- **git**: Détection de dépôt
+- **gh**: CLI GitHub (optionnel)
 
 ### Build & Test
-- **vitest**: Testing framework
-- **release-it**: Automated releases
-- **@types/\***: TypeScript definitions
+- **vitest**: Framework de test
+- **release-it**: Releases automatisées
+- **@types/\***: Définitions TypeScript
 
-## Security Architecture
+## Architecture de sécurité
 
-### Multi-Layer Protection
+### Protection multi-couches
 
-1. **Input Validation**: All user inputs validated
-2. **Command Validation**: PreToolUse hook validates bash commands
-3. **Path Validation**: All file operations check paths
-4. **API Authentication**: Tokens stored securely
-5. **Logging**: Security events logged to file
+1. **Validation d'entrée**: Toutes les entrées utilisateur validées
+2. **Validation de commande**: Hook PreToolUse valide les commandes bash
+3. **Validation de chemin**: Toutes les opérations de fichiers vérifient les chemins
+4. **Authentification API**: Tokens stockés en sécurité
+5. **Journalisation**: Événements de sécurité enregistrés dans fichier
 
-### Hook-Based Security
+### Sécurité basée sur les hooks
 
-**PreToolUse Hook**:
-- Validates bash commands before execution
-- Blocks dangerous operations
-- Logs security events
+**Hook PreToolUse**:
+- Valide les commandes bash avant exécution
+- Bloque les opérations dangereuses
+- Enregistre les événements de sécurité
 
-**PostToolUse Hook**:
-- Validates TypeScript files after editing
-- Runs linters and type checkers
-- Reports errors
+**Hook PostToolUse**:
+- Valide les fichiers TypeScript après édition
+- Exécute les linters et vérificateurs de types
+- Rapporte les erreurs
 
-## Error Handling
+## Gestion des erreurs
 
-### Graceful Degradation
-- GitHub unavailable → Use local templates
-- API failure → Continue with cached data
-- Missing dependencies → Prompt for installation
-- Invalid paths → Skip and continue
+### Dégradation élégante
+- GitHub indisponible → Utiliser templates locaux
+- Échec API → Continuer avec données en cache
+- Dépendances manquantes → Demander l'installation
+- Chemins invalides → Ignorer et continuer
 
-### User Feedback
-- Clear error messages
-- Actionable suggestions
-- Success confirmations
-- Progress indicators
+### Retour utilisateur
+- Messages d'erreur clairs
+- Suggestions actionnables
+- Confirmations de succès
+- Indicateurs de progression
 
-## Extension Points
+## Points d'extension
 
-### Adding New Commands
-1. Create `.md` file in `claude-code-config/commands/`
-2. Add YAML frontmatter
-3. Write command instructions
-4. Commit to repository
+### Ajouter de nouvelles commandes
+1. Créer un fichier `.md` dans `claude-code-config/commands/`
+2. Ajouter le frontmatter YAML
+3. Écrire les instructions de commande
+4. Commiter dans le dépôt
 
-### Adding New Hooks
-1. Create hook script in `scripts/hooks/`
-2. Add to supported hooks list
-3. Define hook configuration
-4. Update settings.ts
+### Ajouter de nouveaux hooks
+1. Créer un script de hook dans `scripts/hooks/`
+2. Ajouter à la liste des hooks supportés
+3. Définir la configuration du hook
+4. Mettre à jour settings.ts
 
-### Adding New Features
-1. Create command file in `src/commands/`
-2. Register in `src/cli.ts`
-3. Add utilities if needed
-4. Update documentation
+### Ajouter de nouvelles fonctionnalités
+1. Créer un fichier de commande dans `src/commands/`
+2. Enregistrer dans `src/cli.ts`
+3. Ajouter des utilitaires si nécessaire
+4. Mettre à jour la documentation
 
-## Testing Strategy
+## Stratégie de test
 
-### Integration Tests
-- Real CLI execution
-- Temporary directory isolation
-- File system validation
-- Settings.json structure checks
+### Tests d'intégration
+- Exécution CLI réelle
+- Isolation de répertoire temporaire
+- Validation du système de fichiers
+- Vérifications de structure settings.json
 
-### Test Command
+### Commande de test
 ```bash
-bun test:run  # Non-interactive mode
+bun test:run  # Mode non-interactif
 ```
 
-**Critical Rule**: Always run tests after modifications
+**Règle critique**: Toujours exécuter les tests après modifications
 
 ## Build & Release
 
-### Build Process
+### Processus de build
 ```bash
 bun run build
-# Compiles TypeScript to dist/cli.js
-# Sets executable permissions
+# Compile TypeScript vers dist/cli.js
+# Définit les permissions exécutables
 ```
 
-### Release Process
+### Processus de release
 ```bash
 bun run release
-# Version bump
+# Bump de version
 # Build
-# Git tag
-# npm publish
+# Tag git
+# Publication npm
 ```
 
-## Related Documentation
+## Documentation associée
 
-- Main README: `README.md`
-- Claude Instructions: `CLAUDE.md`
-- Package Config: `package.json`
-- TypeScript Config: `tsconfig.json`
+- README principal: `README.md`
+- Instructions Claude: `CLAUDE.md`
+- Config Package: `package.json`
+- Config TypeScript: `tsconfig.json`

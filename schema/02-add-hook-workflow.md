@@ -1,45 +1,45 @@
-# Add Hook Command Workflow
+# Workflow d'ajout de Hook
 
-This diagram illustrates the add hook command workflow for installing Claude Code hooks.
+Ce diagramme illustre le workflow de la commande d'ajout de hook pour installer des hooks Claude Code.
 
 ```mermaid
 flowchart TD
-    Start([User runs: aiblueprint claude-code add hook &lt;type&gt;]) --> ValidateType{Valid Hook Type?<br/>post-edit-typescript}
+    Start([L'utilisateur exécute: aiblueprint claude-code add hook &lt;type&gt;]) --> ValidateType{Type de Hook valide?<br/>post-edit-typescript}
 
-    ValidateType -->|No| Error1([❌ Error: Unsupported hook type])
-    ValidateType -->|Yes| DetermineTarget{Determine Target<br/>Directory}
+    ValidateType -->|Non| Error1([❌ Erreur: Type de hook non supporté])
+    ValidateType -->|Oui| DetermineTarget{Déterminer le répertoire<br/>cible}
 
-    DetermineTarget --> InProject{In Git Project<br/>with .claude/?}
+    DetermineTarget --> InProject{Dans un projet Git<br/>avec .claude/?}
 
-    InProject -->|Yes| UseProject[Target: .claude/ in project root<br/>Use $CLAUDE_PROJECT_DIR]
-    InProject -->|No| UseGlobal[Target: ~/.claude/<br/>Global configuration]
+    InProject -->|Oui| UseProject[Cible: .claude/ à la racine du projet<br/>Utilise $CLAUDE_PROJECT_DIR]
+    InProject -->|Non| UseGlobal[Cible: ~/.claude/<br/>Configuration globale]
 
     UseProject --> CheckExist
     UseGlobal --> CheckExist
 
-    CheckExist{Hook File<br/>Already Exists?}
+    CheckExist{Le fichier de hook<br/>existe déjà?}
 
-    CheckExist -->|Yes| PromptOverwrite{Prompt User:<br/>Overwrite existing?}
-    CheckExist -->|No| DownloadHook
+    CheckExist -->|Oui| PromptOverwrite{Demander à l'utilisateur:<br/>Écraser l'existant?}
+    CheckExist -->|Non| DownloadHook
 
-    PromptOverwrite -->|No| Cancel([❌ Operation Cancelled])
-    PromptOverwrite -->|Yes| DownloadHook
+    PromptOverwrite -->|Non| Cancel([❌ Opération annulée])
+    PromptOverwrite -->|Oui| DownloadHook
 
-    DownloadHook[Download Hook] --> GHCheck{GitHub<br/>Available?}
+    DownloadHook[Télécharger le Hook] --> GHCheck{GitHub<br/>disponible?}
 
-    GHCheck -->|Yes| DownloadGH[Download from GitHub<br/>raw.githubusercontent.com]
-    GHCheck -->|No| UseLocal[Use Local<br/>claude-code-config/]
+    GHCheck -->|Oui| DownloadGH[Télécharger depuis GitHub<br/>raw.githubusercontent.com]
+    GHCheck -->|Non| UseLocal[Utiliser les fichiers locaux<br/>claude-code-config/]
 
-    DownloadGH --> WriteFile[Write Hook File to Target]
+    DownloadGH --> WriteFile[Écrire le fichier de hook dans la cible]
     UseLocal --> WriteFile
 
-    WriteFile --> MakeExecutable[chmod 755<br/>Make hook executable]
+    WriteFile --> MakeExecutable[chmod 755<br/>Rendre le hook exécutable]
 
-    MakeExecutable --> UpdateSettings[Update settings.json<br/>Add hook configuration]
+    MakeExecutable --> UpdateSettings[Mettre à jour settings.json<br/>Ajouter la configuration du hook]
 
-    UpdateSettings --> HookConfig[Hook Configuration:<br/>- Event: PostToolUse<br/>- Matcher: Edit&#124;Write&#124;MultiEdit<br/>- File Pattern: *.ts, *.tsx<br/>- Actions: Prettier, ESLint, TypeScript]
+    UpdateSettings --> HookConfig[Configuration du Hook:<br/>- Event: PostToolUse<br/>- Matcher: Edit&#124;Write&#124;MultiEdit<br/>- File Pattern: *.ts, *.tsx<br/>- Actions: Prettier, ESLint, TypeScript]
 
-    HookConfig --> Success([✅ Hook Installed Successfully<br/>Hook is now active])
+    HookConfig --> Success([✅ Hook installé avec succès<br/>Le hook est maintenant actif])
 
     style Start fill:#e1f5ff
     style Success fill:#d4edda
@@ -49,34 +49,34 @@ flowchart TD
     style MakeExecutable fill:#fff3cd
 ```
 
-## Hook Details: post-edit-typescript
+## Détails du Hook: post-edit-typescript
 
-**Purpose**: Automatically format and validate TypeScript files after editing
+**Objectif**: Formater et valider automatiquement les fichiers TypeScript après édition
 
 **Configuration**:
 - **Event**: `PostToolUse`
 - **Matcher**: `Edit|Write|MultiEdit`
 - **File Pattern**: `*.ts`, `*.tsx`
 - **Actions**:
-  1. Runs Prettier for formatting
-  2. Runs ESLint for linting
-  3. Runs TypeScript compiler for type checking
-  4. Reports errors if any
+  1. Exécute Prettier pour le formatage
+  2. Exécute ESLint pour le linting
+  3. Exécute le compilateur TypeScript pour la vérification de types
+  4. Rapporte les erreurs s'il y en a
 
-**Environment Variables**:
-- `$CLAUDE_PROJECT_DIR`: Points to project root (ensures portability)
+**Variables d'environnement**:
+- `$CLAUDE_PROJECT_DIR`: Pointe vers la racine du projet (assure la portabilité)
 
-## Supported Hooks
+## Hooks supportés
 
-Currently supported:
-- `post-edit-typescript`: Post-editing TypeScript validation
+Actuellement supporté:
+- `post-edit-typescript`: Validation TypeScript post-édition
 
-Future hooks can be added by:
-1. Creating hook script in `claude-code-config/scripts/hooks/`
-2. Adding to supported hooks list in `src/commands/addHook.ts`
+Des hooks futurs peuvent être ajoutés en:
+1. Créant un script de hook dans `claude-code-config/scripts/hooks/`
+2. Ajoutant à la liste des hooks supportés dans `src/commands/addHook.ts`
 
-## Related Files
+## Fichiers associés
 
 - Source: `src/commands/addHook.ts`
-- Hook Script: `claude-code-config/scripts/hooks/hook-post-file`
-- Settings Handler: `src/commands/setup/settings.ts`
+- Script de Hook: `claude-code-config/scripts/hooks/hook-post-file`
+- Gestionnaire de paramètres: `src/commands/setup/settings.ts`

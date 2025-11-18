@@ -1,10 +1,10 @@
-# Pro (Premium) Command Workflow
+# Workflow des commandes Pro (Premium)
 
-This diagram illustrates the premium features workflow with token-based authentication.
+Ce diagramme illustre le workflow des fonctionnalités premium avec authentification par token.
 
 ```mermaid
 flowchart TD
-    Start([User runs: aiblueprint claude-code pro]) --> SubCommand{Which<br/>Subcommand?}
+    Start([L'utilisateur exécute: aiblueprint claude-code pro]) --> SubCommand{Quelle<br/>sous-commande?}
 
     SubCommand --> Activate[pro activate]
     SubCommand --> Status[pro status]
@@ -12,68 +12,68 @@ flowchart TD
     SubCommand --> Update[pro update]
 
     %% ACTIVATE FLOW
-    Activate --> HasToken{Token<br/>Provided?}
+    Activate --> HasToken{Token<br/>fourni?}
 
-    HasToken -->|No| PromptToken[Prompt: Enter Premium Token]
-    HasToken -->|Yes| ValidateAPI
+    HasToken -->|Non| PromptToken[Demander: Entrer le token Premium]
+    HasToken -->|Oui| ValidateAPI
 
-    PromptToken --> ValidateAPI[Validate Token via API<br/>codeline.app/api/oauth/usage]
+    PromptToken --> ValidateAPI[Valider le token via l'API<br/>codeline.app/api/oauth/usage]
 
-    ValidateAPI --> APICheck{API<br/>Response OK?}
+    ValidateAPI --> APICheck{Réponse de l'API<br/>OK?}
 
-    APICheck -->|No| ErrorInvalid([❌ Error: Invalid Token])
-    APICheck -->|Yes| ExtractGH[Extract GitHub Token<br/>from Product Metadata]
+    APICheck -->|Non| ErrorInvalid([❌ Erreur: Token invalide])
+    APICheck -->|Oui| ExtractGH[Extraire le token GitHub<br/>des métadonnées du produit]
 
-    ExtractGH --> SaveLocal[Save to Local Config:<br/>~/.aiblueprint/config.json]
+    ExtractGH --> SaveLocal[Sauvegarder dans la config locale:<br/>~/.aiblueprint/config.json]
 
-    SaveLocal --> SuccessActivate([✅ Premium Activated<br/>Token saved locally])
+    SaveLocal --> SuccessActivate([✅ Premium activé<br/>Token sauvegardé localement])
 
     %% STATUS FLOW
-    Status --> CheckToken{Premium Token<br/>Exists Locally?}
+    Status --> CheckToken{Token Premium<br/>existe localement?}
 
-    CheckToken -->|No| NoToken([ℹ️  No Premium Token Found])
-    CheckToken -->|Yes| ShowStatus[Display Token Info:<br/>- Platform: codeline.app<br/>- Status: Active]
+    CheckToken -->|Non| NoToken([ℹ️  Aucun token Premium trouvé])
+    CheckToken -->|Oui| ShowStatus[Afficher les infos du token:<br/>- Plateforme: codeline.app<br/>- Statut: Actif]
 
-    ShowStatus --> SuccessStatus([✅ Status Displayed])
+    ShowStatus --> SuccessStatus([✅ Statut affiché])
 
     %% SETUP FLOW
-    Setup --> VerifyToken{Verify Premium<br/>Token Exists?}
+    Setup --> VerifyToken{Vérifier que le token<br/>Premium existe?}
 
-    VerifyToken -->|No| ErrorNoToken([❌ Error: Run 'pro activate' first])
-    VerifyToken -->|Yes| InstallFree[Install Free Features:<br/>- Commands<br/>- Agents<br/>- Shell Shortcuts<br/>⚠️  Skip free statusline]
+    VerifyToken -->|Non| ErrorNoToken([❌ Erreur: Exécuter 'pro activate' d'abord])
+    VerifyToken -->|Oui| InstallFree[Installer les fonctionnalités gratuites:<br/>- Commandes<br/>- Agents<br/>- Raccourcis shell<br/>⚠️  Ignorer la statusline gratuite]
 
-    InstallFree --> InstallPremium[Install Premium Features<br/>from Private GitHub Repo]
+    InstallFree --> InstallPremium[Installer les fonctionnalités Premium<br/>depuis le dépôt GitHub privé]
 
-    InstallPremium --> AuthGH{Authenticate<br/>with GitHub API}
+    InstallPremium --> AuthGH{S'authentifier<br/>avec l'API GitHub}
 
-    AuthGH --> DownloadTree[Download Entire Directory Tree<br/>github.com/api/repos/.../contents]
+    AuthGH --> DownloadTree[Télécharger l'arborescence complète<br/>github.com/api/repos/.../contents]
 
-    DownloadTree --> ProcessFiles{For Each File<br/>in Tree}
+    DownloadTree --> ProcessFiles{Pour chaque fichier<br/>dans l'arborescence}
 
-    ProcessFiles --> IsDir{Is Directory?}
+    ProcessFiles --> IsDir{Est un répertoire?}
 
-    IsDir -->|Yes| CreateDir[Create Local Directory]
-    IsDir -->|No| DownloadFile[Download & Write File]
+    IsDir -->|Oui| CreateDir[Créer le répertoire local]
+    IsDir -->|Non| DownloadFile[Télécharger et écrire le fichier]
 
-    CreateDir --> NextFile{More Files?}
+    CreateDir --> NextFile{Plus de fichiers?}
     DownloadFile --> NextFile
 
-    NextFile -->|Yes| ProcessFiles
-    NextFile -->|No| MergeConfigs[Merge Premium with Free:<br/>Premium overrides Free]
+    NextFile -->|Oui| ProcessFiles
+    NextFile -->|Non| MergeConfigs[Fusionner Premium avec Gratuit:<br/>Premium écrase Gratuit]
 
-    MergeConfigs --> UpdateSettingsPro[Update settings.json:<br/>- All hooks<br/>- Premium statusline<br/>- Advanced features]
+    MergeConfigs --> UpdateSettingsPro[Mettre à jour settings.json:<br/>- Tous les hooks<br/>- Statusline premium<br/>- Fonctionnalités avancées]
 
-    UpdateSettingsPro --> SuccessSetup([✅ Premium Setup Complete])
+    UpdateSettingsPro --> SuccessSetup([✅ Configuration Premium terminée])
 
     %% UPDATE FLOW
-    Update --> VerifyTokenUpdate{Verify Premium<br/>Token Exists?}
+    Update --> VerifyTokenUpdate{Vérifier que le token<br/>Premium existe?}
 
-    VerifyTokenUpdate -->|No| ErrorNoTokenUpdate([❌ Error: Run 'pro activate' first])
-    VerifyTokenUpdate -->|Yes| RedownloadPremium[Re-download Premium Configs<br/>from Private Repo]
+    VerifyTokenUpdate -->|Non| ErrorNoTokenUpdate([❌ Erreur: Exécuter 'pro activate' d'abord])
+    VerifyTokenUpdate -->|Oui| RedownloadPremium[Re-télécharger les configs Premium<br/>depuis le dépôt privé]
 
-    RedownloadPremium --> OverwriteExisting[Overwrite Existing<br/>Premium Files]
+    RedownloadPremium --> OverwriteExisting[Écraser les fichiers<br/>Premium existants]
 
-    OverwriteExisting --> SuccessUpdate([✅ Premium Configs Updated])
+    OverwriteExisting --> SuccessUpdate([✅ Configs Premium mises à jour])
 
     style Start fill:#e1f5ff
     style SuccessActivate fill:#d4edda
@@ -88,43 +88,43 @@ flowchart TD
     style MergeConfigs fill:#d1ecf1
 ```
 
-## Premium Features
+## Fonctionnalités Premium
 
-### What's Included?
+### Qu'est-ce qui est inclus?
 
-**Premium Commands**:
-- Advanced workflow automation
-- Enhanced productivity commands
-- Exclusive templates
+**Commandes Premium**:
+- Automatisation de workflow avancée
+- Commandes de productivité améliorées
+- Templates exclusifs
 
-**Premium Agents**:
-- Specialized AI agents
-- Task-specific optimizations
+**Agents Premium**:
+- Agents IA spécialisés
+- Optimisations spécifiques aux tâches
 
-**Premium Statusline**:
-- Advanced metrics
-- Enhanced visualizations
-- Real-time insights
+**Statusline Premium**:
+- Métriques avancées
+- Visualisations améliorées
+- Insights en temps réel
 
-**Premium Hooks**:
-- Additional security layers
-- Performance optimizations
-- Custom event handlers
+**Hooks Premium**:
+- Couches de sécurité supplémentaires
+- Optimisations de performance
+- Gestionnaires d'événements personnalisés
 
-### Authentication Flow
+### Flux d'authentification
 
-1. **Token Validation**: API call to `codeline.app/api/oauth/usage`
-2. **GitHub Token Extraction**: From product metadata
-3. **Local Storage**: Saved in `~/.aiblueprint/config.json`
-4. **API Authentication**: Used for private repo access
+1. **Validation du token**: Appel API vers `codeline.app/api/oauth/usage`
+2. **Extraction du token GitHub**: Depuis les métadonnées du produit
+3. **Stockage local**: Sauvegardé dans `~/.aiblueprint/config.json`
+4. **Authentification API**: Utilisé pour l'accès au dépôt privé
 
-### API Integration
+### Intégration API
 
 **Endpoint**: `https://codeline.app/api/products`
 
-**Authentication**: Bearer token (premium token)
+**Authentification**: Bearer token (token premium)
 
-**Response Structure**:
+**Structure de réponse**:
 ```json
 {
   "products": [{
@@ -135,26 +135,26 @@ flowchart TD
 }
 ```
 
-### Premium vs Free
+### Premium vs Gratuit
 
-| Feature | Free | Premium |
+| Fonctionnalité | Gratuit | Premium |
 |---------|------|---------|
-| Commands | 16 templates | Extended library |
-| Agents | 3 basic | Advanced agents |
-| Statusline | Basic | Enhanced metrics |
-| GitHub Repo | Public | Private |
-| Support | Community | Priority |
+| Commandes | 16 templates | Bibliothèque étendue |
+| Agents | 3 basiques | Agents avancés |
+| Statusline | Basique | Métriques améliorées |
+| Dépôt GitHub | Public | Privé |
+| Support | Communauté | Prioritaire |
 
-## Related Files
+## Fichiers associés
 
-- Main Command: `src/commands/pro.ts`
-- Premium Installer: `src/lib/pro-installer.ts`
-- Config Storage: `~/.aiblueprint/config.json`
-- API Client: Embedded in pro command
+- Commande principale: `src/commands/pro.ts`
+- Installateur Premium: `src/lib/pro-installer.ts`
+- Stockage de config: `~/.aiblueprint/config.json`
+- Client API: Intégré dans la commande pro
 
-## Security Notes
+## Notes de sécurité
 
-- Premium tokens are stored locally (not transmitted)
-- GitHub tokens are used only for API authentication
-- All API calls use HTTPS
-- No sensitive data in logs
+- Les tokens premium sont stockés localement (non transmis)
+- Les tokens GitHub sont utilisés uniquement pour l'authentification API
+- Tous les appels API utilisent HTTPS
+- Aucune donnée sensible dans les logs

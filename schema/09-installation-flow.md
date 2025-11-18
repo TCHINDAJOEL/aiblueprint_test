@@ -1,10 +1,10 @@
-# Installation Flow
+# Flux d'installation
 
-This diagram illustrates the complete installation flow from package installation to ready-to-use configuration.
+Ce diagramme illustre le processus d'installation complet de bout en bout, de l'installation du package à la configuration prête à l'emploi.
 
 ```mermaid
 flowchart TD
-    Start([User wants AIBlueprint CLI]) --> InstallMethod{Installation<br/>Method?}
+    Start([L'utilisateur veut le CLI AIBlueprint]) --> InstallMethod{Méthode<br/>d'installation?}
 
     InstallMethod --> NPM[npm install -g aiblueprint]
     InstallMethod --> Yarn[yarn global add aiblueprint]
@@ -16,99 +16,99 @@ flowchart TD
     PNPM --> PackageInstalled
     Bun --> PackageInstalled
 
-    PackageInstalled[Package Installed Globally] --> BinAvailable[Binary available: aiblueprint]
+    PackageInstalled[Package installé globalement] --> BinAvailable[Binaire disponible: aiblueprint]
 
-    BinAvailable --> UserRuns[User runs: aiblueprint claude-code setup]
+    BinAvailable --> UserRuns[L'utilisateur exécute: aiblueprint claude-code setup]
 
-    UserRuns --> CheckFolder{Custom Folder<br/>Specified?}
+    UserRuns --> CheckFolder{Dossier personnalisé<br/>spécifié?}
 
-    CheckFolder -->|Yes --folder| CustomPath[Use Custom Path]
-    CheckFolder -->|No| DetectPlatform
+    CheckFolder -->|Oui --folder| CustomPath[Utiliser chemin personnalisé]
+    CheckFolder -->|Non| DetectPlatform
 
     CustomPath --> FeatureSelect
-    DetectPlatform{Detect Platform} --> MacOS[macOS]
+    DetectPlatform{Détecter la plateforme} --> MacOS[macOS]
     DetectPlatform --> Linux[Linux]
-    DetectPlatform --> Windows[Windows ⚠️ Limited]
+    DetectPlatform --> Windows[Windows ⚠️ Limité]
 
-    MacOS --> DefaultMac[Default: ~/.claude/]
-    Linux --> DefaultLinux[Default: ~/.claude/]
-    Windows --> DefaultWin[Default: ~/.claude/]
+    MacOS --> DefaultMac[Par défaut: ~/.claude/]
+    Linux --> DefaultLinux[Par défaut: ~/.claude/]
+    Windows --> DefaultWin[Par défaut: ~/.claude/]
 
     DefaultMac --> FeatureSelect
     DefaultLinux --> FeatureSelect
     DefaultWin --> FeatureSelect
 
-    FeatureSelect{Feature Selection<br/>Mode}
+    FeatureSelect{Mode de sélection<br/>de fonctionnalités}
 
-    FeatureSelect -->|--skip flag| SelectAll[Select All Features]
-    FeatureSelect -->|Interactive| PromptUser[Prompt for Each Feature]
+    FeatureSelect -->|Flag --skip| SelectAll[Sélectionner toutes les fonctionnalités]
+    FeatureSelect -->|Interactif| PromptUser[Demander pour chaque fonctionnalité]
 
-    PromptUser --> Features[Selected Features List]
+    PromptUser --> Features[Liste des fonctionnalités sélectionnées]
     SelectAll --> Features
 
-    Features --> SourceCheck[Source Check:<br/>GitHub vs Local]
+    Features --> SourceCheck[Vérification de la source:<br/>GitHub vs Local]
 
-    SourceCheck --> TestGH{Test GitHub<br/>Connectivity}
+    SourceCheck --> TestGH{Tester la connectivité<br/>GitHub}
 
-    TestGH -->|Success| UseGitHub[Use GitHub as Source<br/>Always latest configs]
-    TestGH -->|Fail| UseLocalConfig[Use Local Bundled Configs<br/>From package installation]
+    TestGH -->|Succès| UseGitHub[Utiliser GitHub comme source<br/>Toujours les dernières configs]
+    TestGH -->|Échec| UseLocalConfig[Utiliser configs locales incluses<br/>Depuis l'installation du package]
 
     UseGitHub --> BeginInstall
     UseLocalConfig --> BeginInstall
 
-    BeginInstall[Begin Installation Process] --> ParallelInstall{Install Features<br/>in Parallel}
+    BeginInstall[Commencer le processus d'installation] --> ParallelInstall{Installer les fonctionnalités<br/>en parallèle}
 
     %% PARALLEL INSTALLATION BRANCHES
-    ParallelInstall --> InstallScripts[Install Scripts]
-    ParallelInstall --> InstallCommands[Install Commands]
-    ParallelInstall --> InstallAgents[Install Agents]
-    ParallelInstall --> InstallSounds[Install Sounds]
-    ParallelInstall --> SetupShell[Setup Shell Shortcuts]
+    ParallelInstall --> InstallScripts[Installer les scripts]
+    ParallelInstall --> InstallCommands[Installer les commandes]
+    ParallelInstall --> InstallAgents[Installer les agents]
+    ParallelInstall --> InstallSounds[Installer les sons]
+    ParallelInstall --> SetupShell[Configurer les raccourcis shell]
 
     %% SCRIPTS INSTALLATION
-    InstallScripts --> ScriptTypes{Script Types}
-    ScriptTypes --> CmdValidator[command-validator<br/>Security hook]
-    ScriptTypes --> StatuslineScript[statusline<br/>Metrics display]
-    ScriptTypes --> HookPost[hook-post-file<br/>TypeScript validation]
+    InstallScripts --> ScriptTypes{Types de scripts}
+    ScriptTypes --> CmdValidator[command-validator<br/>Hook de sécurité]
+    ScriptTypes --> StatuslineScript[statusline<br/>Affichage de métriques]
+    ScriptTypes --> HookPost[hook-post-file<br/>Validation TypeScript]
 
     CmdValidator --> ScriptsDone
-    StatuslineScript --> CheckBun{Bun<br/>Installed?}
+    StatuslineScript --> CheckBun{Bun<br/>installé?}
     HookPost --> ScriptsDone
 
-    CheckBun -->|No| InstallBun[Install Bun Runtime]
-    CheckBun -->|Yes| BunInstall[Run: bun install<br/>in statusline dir]
+    CheckBun -->|Non| InstallBun[Installer le runtime Bun]
+    CheckBun -->|Oui| BunInstall[Exécuter: bun install<br/>dans le répertoire statusline]
 
     InstallBun --> BunInstall
-    BunInstall --> CheckCCUsage{ccusage<br/>Installed?}
+    BunInstall --> CheckCCUsage{ccusage<br/>installé?}
 
-    CheckCCUsage -->|No| InstallCCUsage[Install ccusage globally]
-    CheckCCUsage -->|Yes| ScriptsDone
+    CheckCCUsage -->|Non| InstallCCUsage[Installer ccusage globalement]
+    CheckCCUsage -->|Oui| ScriptsDone
 
-    InstallCCUsage --> ScriptsDone[Scripts Installed]
+    InstallCCUsage --> ScriptsDone[Scripts installés]
 
     %% COMMANDS INSTALLATION
-    InstallCommands --> CopyCommands[Copy 16 command templates<br/>to ~/.claude/commands/]
-    CopyCommands --> CommandsDone[Commands Installed]
+    InstallCommands --> CopyCommands[Copier 16 templates de commandes<br/>dans ~/.claude/commands/]
+    CopyCommands --> CommandsDone[Commandes installées]
 
     %% AGENTS INSTALLATION
-    InstallAgents --> CopyAgents[Copy 3 agent templates<br/>to ~/.claude/agents/]
-    CopyAgents --> AgentsDone[Agents Installed]
+    InstallAgents --> CopyAgents[Copier 3 templates d'agents<br/>dans ~/.claude/agents/]
+    CopyAgents --> AgentsDone[Agents installés]
 
     %% SOUNDS INSTALLATION
-    InstallSounds --> CopySounds[Copy MP3 files<br/>to ~/.claude/sounds/]
-    CopySounds --> SoundsDone[Sounds Installed]
+    InstallSounds --> CopySounds[Copier fichiers MP3<br/>dans ~/.claude/sounds/]
+    CopySounds --> SoundsDone[Sons installés]
 
     %% SHELL SHORTCUTS
-    SetupShell --> DetectShellPlatform{Platform?}
+    SetupShell --> DetectShellPlatform{Plateforme?}
 
-    DetectShellPlatform -->|macOS| EditZshenv[Add aliases to ~/.zshenv]
+    DetectShellPlatform -->|macOS| EditZshenv[Ajouter alias dans ~/.zshenv]
     DetectShellPlatform -->|Linux| DetectLinuxShell{Shell?}
-    DetectShellPlatform -->|Windows| SkipShell[Skip: Not supported]
+    DetectShellPlatform -->|Windows| SkipShell[Ignorer: Non supporté]
 
-    DetectLinuxShell -->|bash| EditBashrc[Add aliases to ~/.bashrc]
-    DetectLinuxShell -->|zsh| EditZshrc[Add aliases to ~/.zshrc]
+    DetectLinuxShell -->|bash| EditBashrc[Ajouter alias dans ~/.bashrc]
+    DetectLinuxShell -->|zsh| EditZshrc[Ajouter alias dans ~/.zshrc]
 
-    EditZshenv --> ShellDone[Shell Shortcuts Added:<br/>cc, ccc aliases]
+    EditZshenv --> ShellDone[Raccourcis shell ajoutés:<br/>alias cc, ccc]
     EditBashrc --> ShellDone
     EditZshrc --> ShellDone
     SkipShell --> ShellDone
@@ -120,23 +120,23 @@ flowchart TD
     SoundsDone --> MergeInstall
     ShellDone --> MergeInstall
 
-    MergeInstall[All Features Installed] --> UpdateSettings[Update settings.json]
+    MergeInstall[Toutes les fonctionnalités installées] --> UpdateSettings[Mettre à jour settings.json]
 
-    UpdateSettings --> ReadExisting{settings.json<br/>Exists?}
+    UpdateSettings --> ReadExisting{settings.json<br/>existe?}
 
-    ReadExisting -->|Yes| MergeSettings[Merge with Existing:<br/>Preserve user customizations]
-    ReadExisting -->|No| CreateNew[Create New settings.json]
+    ReadExisting -->|Oui| MergeSettings[Fusionner avec existant:<br/>Préserver personnalisations utilisateur]
+    ReadExisting -->|Non| CreateNew[Créer nouveau settings.json]
 
     MergeSettings --> WriteSettings
     CreateNew --> WriteSettings
 
-    WriteSettings[Write Settings Configuration] --> SettingsContent{Add to Settings}
+    WriteSettings[Écrire configuration Settings] --> SettingsContent{Ajouter aux Settings}
 
-    SettingsContent --> AddStatusline[StatusLine:<br/>- Command: bun script<br/>- Real-time metrics]
-    SettingsContent --> AddPreHook[PreToolUse Hook:<br/>- command-validator<br/>- Bash security]
-    SettingsContent --> AddPostHook[PostToolUse Hook:<br/>- hook-post-file<br/>- TypeScript validation]
-    SettingsContent --> AddStopHook[Stop Hook:<br/>- Finish sound]
-    SettingsContent --> AddNotifHook[Notification Hook:<br/>- Need-human sound]
+    SettingsContent --> AddStatusline[StatusLine:<br/>- Commande: bun script<br/>- Métriques temps réel]
+    SettingsContent --> AddPreHook[Hook PreToolUse:<br/>- command-validator<br/>- Sécurité Bash]
+    SettingsContent --> AddPostHook[Hook PostToolUse:<br/>- hook-post-file<br/>- Validation TypeScript]
+    SettingsContent --> AddStopHook[Hook Stop:<br/>- Son de fin]
+    SettingsContent --> AddNotifHook[Hook Notification:<br/>- Son besoin-humain]
 
     AddStatusline --> SettingsSaved
     AddPreHook --> SettingsSaved
@@ -144,32 +144,32 @@ flowchart TD
     AddStopHook --> SettingsSaved
     AddNotifHook --> SettingsSaved
 
-    SettingsSaved[settings.json Saved] --> CreateSymlinks{Create Symlinks<br/>to Other Tools?}
+    SettingsSaved[settings.json sauvegardé] --> CreateSymlinks{Créer des liens symboliques<br/>vers autres outils?}
 
-    CreateSymlinks -->|Yes| SymlinkProcess[Run Symlink Workflow]
-    CreateSymlinks -->|No| FinalCheck
+    CreateSymlinks -->|Oui| SymlinkProcess[Exécuter workflow de symlink]
+    CreateSymlinks -->|Non| FinalCheck
 
-    SymlinkProcess --> FinalCheck[Final Verification]
+    SymlinkProcess --> FinalCheck[Vérification finale]
 
-    FinalCheck --> VerifyFiles{Verify All Files<br/>Installed?}
+    FinalCheck --> VerifyFiles{Vérifier tous les fichiers<br/>installés?}
 
-    VerifyFiles -->|No| ShowWarnings[Show Warnings:<br/>Missing files list]
-    VerifyFiles -->|Yes| VerifySettings
+    VerifyFiles -->|Non| ShowWarnings[Afficher les avertissements:<br/>Liste des fichiers manquants]
+    VerifyFiles -->|Oui| VerifySettings
 
-    ShowWarnings --> VerifySettings{Verify Settings<br/>Valid JSON?}
+    ShowWarnings --> VerifySettings{Vérifier Settings<br/>JSON valide?}
 
-    VerifySettings -->|No| ErrorSettings([❌ Error: Invalid settings.json])
-    VerifySettings -->|Yes| Success
+    VerifySettings -->|Non| ErrorSettings([❌ Erreur: settings.json invalide])
+    VerifySettings -->|Oui| Success
 
-    Success[Generate Success Report] --> DisplayReport{Display Report}
+    Success[Générer le rapport de succès] --> DisplayReport{Afficher le rapport}
 
-    DisplayReport --> ShowInstalled[✅ Installed Features:<br/>- Commands: X<br/>- Agents: Y<br/>- Scripts: Z]
-    DisplayReport --> ShowNext[📋 Next Steps:<br/>1. Restart shell<br/>2. Run: claude<br/>3. Try: /commit]
+    DisplayReport --> ShowInstalled[✅ Fonctionnalités installées:<br/>- Commandes: X<br/>- Agents: Y<br/>- Scripts: Z]
+    DisplayReport --> ShowNext[📋 Étapes suivantes:<br/>1. Redémarrer le shell<br/>2. Exécuter: claude<br/>3. Essayer: /commit]
 
     ShowInstalled --> Complete
     ShowNext --> Complete
 
-    Complete([🎉 Installation Complete!<br/>AIBlueprint CLI Ready])
+    Complete([🎉 Installation terminée!<br/>CLI AIBlueprint prêt])
 
     style Start fill:#e1f5ff
     style Complete fill:#d4edda
@@ -179,25 +179,25 @@ flowchart TD
     style Success fill:#d4edda
 ```
 
-## Installation Phases
+## Phases d'installation
 
-### Phase 1: Package Installation
+### Phase 1: Installation du package
 
-**Methods**:
+**Méthodes**:
 - npm: `npm install -g aiblueprint`
 - Yarn: `yarn global add aiblueprint`
 - pnpm: `pnpm add -g aiblueprint`
 - Bun: `bun add -g aiblueprint`
 
-**Result**: Binary available at `aiblueprint`
+**Résultat**: Binaire disponible à `aiblueprint`
 
-### Phase 2: Configuration Source Selection
+### Phase 2: Sélection de la source de configuration
 
-**Priority**:
-1. **GitHub** (preferred): Always latest configs
-2. **Local Bundled**: Packaged with npm installation
+**Priorité**:
+1. **GitHub** (préféré): Toujours les dernières configs
+2. **Local inclus**: Empaqueté avec l'installation npm
 
-**Decision Logic**:
+**Logique de décision**:
 ```javascript
 if (await isGitHubAvailable()) {
   source = "GitHub"
@@ -206,68 +206,68 @@ if (await isGitHubAvailable()) {
 }
 ```
 
-### Phase 3: Feature Selection
+### Phase 3: Sélection de fonctionnalités
 
-**Interactive Mode**:
+**Mode interactif**:
 ```
-? Select features to install:
-  ◉ Shell shortcuts (cc, ccc aliases)
-  ◉ Command validation (security hooks)
-  ◉ Custom statusline
-  ◉ AIBlueprint commands (16 templates)
-  ◉ AIBlueprint agents (3 templates)
-  ◉ Notification sounds
-  ◉ Post-edit TypeScript hook
-  ◯ Codex/OpenCode symlinks
+? Sélectionner les fonctionnalités à installer:
+  ◉ Raccourcis shell (alias cc, ccc)
+  ◉ Validation de commande (hooks de sécurité)
+  ◉ Statusline personnalisée
+  ◉ Commandes AIBlueprint (16 templates)
+  ◉ Agents AIBlueprint (3 templates)
+  ◉ Sons de notification
+  ◉ Hook post-édition TypeScript
+  ◯ Liens symboliques Codex/OpenCode
 ```
 
-**Skip Mode** (`--skip`):
-- Selects all features automatically
-- No user interaction required
-- Fast installation
+**Mode Skip** (`--skip`):
+- Sélectionne automatiquement toutes les fonctionnalités
+- Aucune interaction utilisateur requise
+- Installation rapide
 
-### Phase 4: Parallel Installation
+### Phase 4: Installation parallèle
 
-All features install concurrently for speed:
+Toutes les fonctionnalités s'installent simultanément pour la rapidité:
 
-#### Scripts Installation
-1. **command-validator**: Security validation
-2. **statusline**: Metrics display
-3. **hook-post-file**: TypeScript validation
+#### Installation des scripts
+1. **command-validator**: Validation de sécurité
+2. **statusline**: Affichage de métriques
+3. **hook-post-file**: Validation TypeScript
 
-**Dependencies Check**:
-- Bun runtime (auto-install if missing)
-- ccusage package (auto-install if missing)
+**Vérification des dépendances**:
+- Runtime Bun (auto-installation si manquant)
+- Package ccusage (auto-installation si manquant)
 
-#### Commands Installation
-- Copies 16 command templates
-- Target: `~/.claude/commands/`
-- Source: GitHub or local
+#### Installation des commandes
+- Copie 16 templates de commandes
+- Cible: `~/.claude/commands/`
+- Source: GitHub ou local
 
-#### Agents Installation
-- Copies 3 agent templates
-- Target: `~/.claude/agents/`
-- Source: GitHub or local
+#### Installation des agents
+- Copie 3 templates d'agents
+- Cible: `~/.claude/agents/`
+- Source: GitHub ou local
 
-#### Sounds Installation
-- Copies MP3 notification files
-- Target: `~/.claude/sounds/`
-- Used for event notifications
+#### Installation des sons
+- Copie fichiers MP3 de notification
+- Cible: `~/.claude/sounds/`
+- Utilisés pour notifications d'événements
 
-#### Shell Shortcuts
-**macOS**: Adds to `~/.zshenv`
-**Linux**: Adds to `~/.bashrc` or `~/.zshrc`
-**Windows**: Skipped (not supported)
+#### Raccourcis shell
+**macOS**: Ajoute dans `~/.zshenv`
+**Linux**: Ajoute dans `~/.bashrc` ou `~/.zshrc`
+**Windows**: Ignoré (non supporté)
 
-**Aliases**:
+**Alias**:
 ```bash
 alias cc='claude --dangerouslySkipPermissions'
 alias ccc='cc --continue'
 ```
 
-### Phase 5: Settings Configuration
+### Phase 5: Configuration des paramètres
 
-**settings.json Structure**:
+**Structure de settings.json**:
 ```json
 {
   "statusLine": {
@@ -292,119 +292,119 @@ alias ccc='cc --continue'
 }
 ```
 
-**Merge Strategy**:
-- Read existing settings
-- Preserve user customizations
-- Add new configurations
-- Avoid duplicates
+**Stratégie de fusion**:
+- Lire les paramètres existants
+- Préserver les personnalisations utilisateur
+- Ajouter nouvelles configurations
+- Éviter les doublons
 
-### Phase 6: Verification & Report
+### Phase 6: Vérification & Rapport
 
-**Verification Steps**:
-1. Check all files exist
-2. Validate settings.json syntax
-3. Test hook executability
-4. Verify shell config
+**Étapes de vérification**:
+1. Vérifier que tous les fichiers existent
+2. Valider la syntaxe settings.json
+3. Tester l'exécutabilité des hooks
+4. Vérifier la config shell
 
-**Success Report**:
+**Rapport de succès**:
 ```
-✅ Installation Complete!
+✅ Installation terminée!
 
-Installed Features:
-  • Commands: 16 templates
+Fonctionnalités installées:
+  • Commandes: 16 templates
   • Agents: 3 templates
-  • Scripts: 3 security & utility scripts
-  • Sounds: 2 notification files
-  • Shell Shortcuts: cc, ccc aliases
+  • Scripts: 3 scripts de sécurité & utilitaires
+  • Sons: 2 fichiers de notification
+  • Raccourcis shell: alias cc, ccc
 
-Next Steps:
-  1. Restart your shell (or run: source ~/.zshenv)
-  2. Run: claude
-  3. Try your first command: /commit
+Étapes suivantes:
+  1. Redémarrez votre shell (ou exécutez: source ~/.zshenv)
+  2. Exécutez: claude
+  3. Essayez votre première commande: /commit
 
 Documentation: https://github.com/Melvynx/aiblueprint-cli
 ```
 
-## Installation Paths
+## Chemins d'installation
 
-### Default Locations
+### Emplacements par défaut
 
-| Item | Path |
+| Item | Chemin |
 |------|------|
-| Commands | `~/.claude/commands/` |
+| Commandes | `~/.claude/commands/` |
 | Agents | `~/.claude/agents/` |
 | Scripts | `~/.claude/scripts/` |
-| Sounds | `~/.claude/sounds/` |
-| Settings | `~/.claude/settings.json` |
-| Security Log | `~/.claude/security.log` |
+| Sons | `~/.claude/sounds/` |
+| Paramètres | `~/.claude/settings.json` |
+| Journal de sécurité | `~/.claude/security.log` |
 
-### Custom Locations
+### Emplacements personnalisés
 
-Use `--folder` flag:
+Utiliser le flag `--folder`:
 ```bash
 aiblueprint claude-code setup --folder /custom/path
 ```
 
-## Platform Differences
+## Différences de plateforme
 
-### macOS (Full Support)
+### macOS (Support complet)
 - Shell: `.zshenv`
-- Audio: `afplay` command
-- Keychain: Available for secrets
-- File Permissions: Full support
+- Audio: Commande `afplay`
+- Keychain: Disponible pour secrets
+- Permissions de fichiers: Support complet
 
-### Linux (Partial Support)
-- Shell: `.bashrc` or `.zshrc`
-- Audio: May require `mpg123` or `sox`
-- Keychain: Not available
-- File Permissions: Full support
+### Linux (Support partiel)
+- Shell: `.bashrc` ou `.zshrc`
+- Audio: Peut nécessiter `mpg123` ou `sox`
+- Keychain: Non disponible
+- Permissions de fichiers: Support complet
 
-### Windows (Limited Support)
-- Shell: Not supported
-- Audio: Not supported
-- Paths: Different path resolution
-- Symlinks: May require admin rights
+### Windows (Support limité)
+- Shell: Non supporté
+- Audio: Non supporté
+- Chemins: Résolution de chemin différente
+- Liens symboliques: Peut nécessiter droits admin
 
-## Troubleshooting
+## Dépannage
 
-### GitHub Connection Failed
-**Symptom**: Uses local configs instead of latest
+### Échec de connexion GitHub
+**Symptôme**: Utilise configs locales au lieu des dernières
 
 **Solution**:
-- Check internet connection
-- Verify GitHub is not blocked
-- Run again when online
+- Vérifier la connexion internet
+- Vérifier que GitHub n'est pas bloqué
+- Re-exécuter quand en ligne
 
-### Bun Installation Failed
-**Symptom**: Statusline not working
+### Échec d'installation de Bun
+**Symptôme**: Statusline ne fonctionne pas
 
 **Solution**:
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
 
-### Settings.json Invalid
-**Symptom**: Installation fails at settings merge
+### Settings.json invalide
+**Symptôme**: L'installation échoue à la fusion des settings
 
 **Solution**:
-- Backup existing settings.json
-- Delete corrupted file
-- Re-run installation
+- Sauvegarder settings.json existant
+- Supprimer fichier corrompu
+- Re-exécuter l'installation
 
-### Shell Shortcuts Not Working
-**Symptom**: `cc` and `ccc` commands not found
+### Raccourcis shell ne fonctionnent pas
+**Symptôme**: Commandes `cc` et `ccc` introuvables
 
 **Solution**:
 ```bash
-# Reload shell config
+# Recharger la config shell
 source ~/.zshenv  # macOS
 source ~/.bashrc  # Linux bash
 source ~/.zshrc   # Linux zsh
 ```
 
-## Related Files
+## Fichiers associés
 
-- Setup Command: `src/commands/setup.ts`
-- File Installer: `src/utils/file-installer.ts`
-- Settings Handler: `src/commands/setup/settings.ts`
-- GitHub Utils: `src/utils/github.ts`
+- Commande Setup: `src/commands/setup.ts`
+- Installateur de fichiers: `src/utils/file-installer.ts`
+- Gestionnaire de paramètres: `src/commands/setup/settings.ts`
+- Utilitaires GitHub: `src/utils/github.ts`

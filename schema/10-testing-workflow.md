@@ -1,139 +1,139 @@
-# Testing Workflow
+# Workflow de test
 
-This diagram illustrates the testing workflow and critical development practices for the AIBlueprint CLI.
+Ce diagramme illustre le workflow de test et les pratiques de développement critiques pour le CLI AIBlueprint.
 
 ```mermaid
 flowchart TD
-    Start([Developer Makes Code Changes]) --> ModifyCode[Modify TypeScript Files:<br/>- Commands<br/>- Utils<br/>- CLI structure]
+    Start([Le développeur fait des changements de code]) --> ModifyCode[Modifier les fichiers TypeScript:<br/>- Commandes<br/>- Utilitaires<br/>- Structure CLI]
 
-    ModifyCode --> CriticalRule[🚨 CRITICAL RULE:<br/>ALWAYS run tests after changes]
+    ModifyCode --> CriticalRule[🚨 RÈGLE CRITIQUE:<br/>TOUJOURS exécuter les tests après changements]
 
-    CriticalRule --> RunTests[Execute: bun test:run]
+    CriticalRule --> RunTests[Exécuter: bun test:run]
 
-    RunTests --> TestFramework[Vitest Test Framework] --> LoadConfig[Load vitest.config.ts]
+    RunTests --> TestFramework[Framework de test Vitest] --> LoadConfig[Charger vitest.config.ts]
 
-    LoadConfig --> ConfigSettings{Test Configuration}
+    LoadConfig --> ConfigSettings{Configuration de test}
 
     ConfigSettings --> Pattern[Pattern: tests/**/*.test.ts]
-    ConfigSettings --> Env[Environment: Node]
-    ConfigSettings --> Timeout[Timeout: 30 seconds]
-    ConfigSettings --> Isolate[Isolate: false<br/>Persists file writes]
+    ConfigSettings --> Env[Environnement: Node]
+    ConfigSettings --> Timeout[Timeout: 30 secondes]
+    ConfigSettings --> Isolate[Isolate: false<br/>Persiste les écritures de fichiers]
 
     Pattern --> FindTests
     Env --> FindTests
     Timeout --> FindTests
     Isolate --> FindTests
 
-    FindTests[Discover Test Files] --> IntegrationTest[tests/setup.integration.test.ts]
+    FindTests[Découvrir les fichiers de test] --> IntegrationTest[tests/setup.integration.test.ts]
 
-    IntegrationTest --> TestSuite{Integration Test Suite}
+    IntegrationTest --> TestSuite{Suite de tests d'intégration}
 
-    TestSuite --> Setup1[Test 1: Setup Command Execution]
-    TestSuite --> Setup2[Test 2: Settings Validation]
-    TestSuite --> Setup3[Test 3: File Installation]
+    TestSuite --> Setup1[Test 1: Exécution commande Setup]
+    TestSuite --> Setup2[Test 2: Validation Settings]
+    TestSuite --> Setup3[Test 3: Installation fichiers]
 
     %% TEST 1: SETUP COMMAND
-    Setup1 --> CreateTemp1[Create Temporary Directory]
-    CreateTemp1 --> SetEnv1[Set Environment Variables:<br/>- HOME: temp dir<br/>- CLAUDE_CODE_FOLDER: temp/.claude]
+    Setup1 --> CreateTemp1[Créer répertoire temporaire]
+    CreateTemp1 --> SetEnv1[Définir variables d'environnement:<br/>- HOME: répertoire temp<br/>- CLAUDE_CODE_FOLDER: temp/.claude]
 
-    SetEnv1 --> ExecuteCLI1[Execute Real CLI Command:<br/>bun src/cli.ts claude-code --skip setup]
+    SetEnv1 --> ExecuteCLI1[Exécuter commande CLI réelle:<br/>bun src/cli.ts claude-code --skip setup]
 
-    ExecuteCLI1 --> WaitFiles1[Wait for File Creation:<br/>Max 10 seconds<br/>GitHub API delay]
+    ExecuteCLI1 --> WaitFiles1[Attendre création fichiers:<br/>Max 10 secondes<br/>Délai API GitHub]
 
-    WaitFiles1 --> CheckSuccess1{Command<br/>Succeeded?}
+    WaitFiles1 --> CheckSuccess1{Commande<br/>réussie?}
 
-    CheckSuccess1 -->|No| Fail1([❌ Test Failed:<br/>CLI execution error])
-    CheckSuccess1 -->|Yes| Verify1[Verify Files Created:<br/>- commands/<br/>- agents/<br/>- scripts/<br/>- settings.json]
+    CheckSuccess1 -->|Non| Fail1([❌ Test échoué:<br/>Erreur exécution CLI])
+    CheckSuccess1 -->|Oui| Verify1[Vérifier fichiers créés:<br/>- commands/<br/>- agents/<br/>- scripts/<br/>- settings.json]
 
-    Verify1 --> Assert1{All Files<br/>Present?}
+    Verify1 --> Assert1{Tous les fichiers<br/>présents?}
 
-    Assert1 -->|No| Fail2([❌ Test Failed:<br/>Missing files])
-    Assert1 -->|Yes| Pass1[✅ Test 1 Passed]
+    Assert1 -->|Non| Fail2([❌ Test échoué:<br/>Fichiers manquants])
+    Assert1 -->|Oui| Pass1[✅ Test 1 réussi]
 
     %% TEST 2: SETTINGS VALIDATION
-    Setup2 --> CreateTemp2[Create Temporary Directory]
-    CreateTemp2 --> ExecuteCLI2[Execute CLI:<br/>Setup with all features]
+    Setup2 --> CreateTemp2[Créer répertoire temporaire]
+    CreateTemp2 --> ExecuteCLI2[Exécuter CLI:<br/>Setup avec toutes fonctionnalités]
 
-    ExecuteCLI2 --> WaitFiles2[Wait for Installation]
+    ExecuteCLI2 --> WaitFiles2[Attendre l'installation]
 
-    WaitFiles2 --> ReadSettings[Read settings.json]
+    WaitFiles2 --> ReadSettings[Lire settings.json]
 
-    ReadSettings --> ParseJSON{Parse JSON<br/>Valid?}
+    ReadSettings --> ParseJSON{Parser JSON<br/>Valide?}
 
-    ParseJSON -->|No| Fail3([❌ Test Failed:<br/>Invalid JSON])
-    ParseJSON -->|Yes| ValidateStructure[Validate Structure]
+    ParseJSON -->|Non| Fail3([❌ Test échoué:<br/>JSON invalide])
+    ParseJSON -->|Oui| ValidateStructure[Valider la structure]
 
-    ValidateStructure --> CheckHooks{All Hooks<br/>Configured?}
+    ValidateStructure --> CheckHooks{Tous les hooks<br/>configurés?}
 
     CheckHooks --> VerifyPreToolUse[PreToolUse: command-validator]
     CheckHooks --> VerifyPostToolUse[PostToolUse: hook-post-file]
-    CheckHooks --> VerifyStop[Stop: finish sound]
-    CheckHooks --> VerifyNotif[Notification: need-human sound]
+    CheckHooks --> VerifyStop[Stop: son de fin]
+    CheckHooks --> VerifyNotif[Notification: son besoin-humain]
 
     VerifyPreToolUse --> CheckStatusline
     VerifyPostToolUse --> CheckStatusline
     VerifyStop --> CheckStatusline
     VerifyNotif --> CheckStatusline
 
-    CheckStatusline{Statusline<br/>Configured?}
+    CheckStatusline{Statusline<br/>configurée?}
 
-    CheckStatusline -->|No| Fail4([❌ Test Failed:<br/>Missing statusline])
-    CheckStatusline -->|Yes| Pass2[✅ Test 2 Passed]
+    CheckStatusline -->|Non| Fail4([❌ Test échoué:<br/>Statusline manquante])
+    CheckStatusline -->|Oui| Pass2[✅ Test 2 réussi]
 
     %% TEST 3: FILE INSTALLATION
-    Setup3 --> CreateTemp3[Create Temporary Directory]
-    CreateTemp3 --> ExecuteCLI3[Execute CLI:<br/>Selective feature install]
+    Setup3 --> CreateTemp3[Créer répertoire temporaire]
+    CreateTemp3 --> ExecuteCLI3[Exécuter CLI:<br/>Installation sélective fonctionnalités]
 
-    ExecuteCLI3 --> WaitFiles3[Wait for Installation]
+    ExecuteCLI3 --> WaitFiles3[Attendre l'installation]
 
-    WaitFiles3 --> CheckCommands{Verify Commands<br/>Installed?}
+    WaitFiles3 --> CheckCommands{Vérifier commandes<br/>installées?}
 
-    CheckCommands --> CountCmd[Count .md files<br/>in commands/]
+    CheckCommands --> CountCmd[Compter fichiers .md<br/>dans commands/]
 
-    CountCmd --> AssertCount1{Count == 16?}
+    CountCmd --> AssertCount1{Compte == 16?}
 
-    AssertCount1 -->|No| Fail5([❌ Test Failed:<br/>Wrong command count])
-    AssertCount1 -->|Yes| CheckAgents
+    AssertCount1 -->|Non| Fail5([❌ Test échoué:<br/>Mauvais compte de commandes])
+    AssertCount1 -->|Oui| CheckAgents
 
-    CheckAgents{Verify Agents<br/>Installed?}
+    CheckAgents{Vérifier agents<br/>installés?}
 
-    CheckAgents --> CountAgent[Count .md files<br/>in agents/]
+    CheckAgents --> CountAgent[Compter fichiers .md<br/>dans agents/]
 
-    CountAgent --> AssertCount2{Count == 3?}
+    CountAgent --> AssertCount2{Compte == 3?}
 
-    AssertCount2 -->|No| Fail6([❌ Test Failed:<br/>Wrong agent count])
-    AssertCount2 -->|Yes| CheckScripts
+    AssertCount2 -->|Non| Fail6([❌ Test échoué:<br/>Mauvais compte d'agents])
+    AssertCount2 -->|Oui| CheckScripts
 
-    CheckScripts{Verify Scripts<br/>Installed?}
+    CheckScripts{Vérifier scripts<br/>installés?}
 
-    CheckScripts --> CheckValidator[command-validator exists?]
-    CheckScripts --> CheckStatuslineScript[statusline exists?]
-    CheckScripts --> CheckHookPost[hook-post-file exists?]
+    CheckScripts --> CheckValidator[command-validator existe?]
+    CheckScripts --> CheckStatuslineScript[statusline existe?]
+    CheckScripts --> CheckHookPost[hook-post-file existe?]
 
     CheckValidator --> AssertScripts
     CheckStatuslineScript --> AssertScripts
     CheckHookPost --> AssertScripts
 
-    AssertScripts{All Scripts<br/>Present?}
+    AssertScripts{Tous les scripts<br/>présents?}
 
-    AssertScripts -->|No| Fail7([❌ Test Failed:<br/>Missing scripts])
-    AssertScripts -->|Yes| Pass3[✅ Test 3 Passed]
+    AssertScripts -->|Non| Fail7([❌ Test échoué:<br/>Scripts manquants])
+    AssertScripts -->|Oui| Pass3[✅ Test 3 réussi]
 
     %% MERGE RESULTS
     Pass1 --> CollectResults
     Pass2 --> CollectResults
     Pass3 --> CollectResults
 
-    CollectResults[Collect All Test Results] --> Cleanup[Cleanup Temporary Directories]
+    CollectResults[Collecter tous les résultats de test] --> Cleanup[Nettoyer répertoires temporaires]
 
-    Cleanup --> GenerateReport[Generate Test Report]
+    Cleanup --> GenerateReport[Générer rapport de test]
 
-    GenerateReport --> AllPassed{All Tests<br/>Passed?}
+    GenerateReport --> AllPassed{Tous les tests<br/>réussis?}
 
-    AllPassed -->|No| TestsFailed([❌ TESTS FAILED<br/>Fix issues before commit])
-    AllPassed -->|Yes| TestsSuccess([✅ ALL TESTS PASSED<br/>Safe to commit])
+    AllPassed -->|Non| TestsFailed([❌ TESTS ÉCHOUÉS<br/>Corriger problèmes avant commit])
+    AllPassed -->|Oui| TestsSuccess([✅ TOUS LES TESTS RÉUSSIS<br/>Sûr de commit])
 
-    TestsSuccess --> SafeCommit[Developer can commit changes]
+    TestsSuccess --> SafeCommit[Le développeur peut commit les changements]
 
     style Start fill:#e1f5ff
     style TestsSuccess fill:#d4edda
@@ -149,22 +149,22 @@ flowchart TD
     style CriticalRule fill:#ffc107
 ```
 
-## Critical Development Rules
+## Règles de développement critiques
 
-### Rule #1: Always Test After Changes
+### Règle #1: Toujours tester après changements
 ```bash
-# REQUIRED after every modification
+# REQUIS après chaque modification
 bun test:run
 ```
 
-**Why `test:run` specifically?**
-- Runs in non-interactive mode
-- Avoids hanging on prompts
-- CI/CD compatible
-- Fast execution
+**Pourquoi `test:run` spécifiquement?**
+- Exécute en mode non-interactif
+- Évite de bloquer sur les prompts
+- Compatible CI/CD
+- Exécution rapide
 
-### Rule #2: Never Skip Tests
-❌ **WRONG**:
+### Règle #2: Ne jamais ignorer les tests
+❌ **FAUX**:
 ```bash
 git add .
 git commit -m "fix: update setup"
@@ -173,29 +173,29 @@ git push
 
 ✅ **CORRECT**:
 ```bash
-# Make changes
+# Faire les changements
 bun test:run
-# Only if tests pass:
+# Seulement si les tests passent:
 git add .
 git commit -m "fix: update setup"
 git push
 ```
 
-### Rule #3: Use Tests to Validate
-Instead of manual testing:
+### Règle #3: Utiliser les tests pour valider
+Au lieu de tests manuels:
 ```bash
-# ❌ Don't do this
+# ❌ Ne pas faire ceci
 aiblueprint claude-code setup --skip
-# Manually check files
+# Vérifier manuellement les fichiers
 
-# ✅ Do this
+# ✅ Faire ceci
 bun test:run
-# Automated validation
+# Validation automatisée
 ```
 
-## Test Configuration
+## Configuration de test
 
-**File**: `vitest.config.ts`
+**Fichier**: `vitest.config.ts`
 
 ```typescript
 export default defineConfig({
@@ -203,33 +203,33 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.test.ts'],
     timeout: 30000,
-    isolate: false, // Allows file writes to persist
+    isolate: false, // Permet aux écritures de fichiers de persister
   },
 })
 ```
 
-## Integration Test Structure
+## Structure de test d'intégration
 
-**File**: `tests/setup.integration.test.ts`
+**Fichier**: `tests/setup.integration.test.ts`
 
-### Test 1: Basic Setup Execution
+### Test 1: Exécution basique du Setup
 ```typescript
-test('setup command executes successfully', async () => {
+test('la commande setup s\'exécute avec succès', async () => {
   const tempDir = await createTempDir()
   process.env.HOME = tempDir
 
   await exec('bun src/cli.ts claude-code --skip setup')
 
-  // Wait for GitHub API
+  // Attendre l'API GitHub
   await waitForFiles(tempDir, 10000)
 
   expect(fs.existsSync(`${tempDir}/.claude/settings.json`)).toBe(true)
 })
 ```
 
-### Test 2: Settings Validation
+### Test 2: Validation des Settings
 ```typescript
-test('settings.json has correct structure', async () => {
+test('settings.json a la structure correcte', async () => {
   const settings = JSON.parse(
     fs.readFileSync(`${tempDir}/.claude/settings.json`, 'utf-8')
   )
@@ -240,9 +240,9 @@ test('settings.json has correct structure', async () => {
 })
 ```
 
-### Test 3: File Installation
+### Test 3: Installation de fichiers
 ```typescript
-test('all commands and agents are installed', async () => {
+test('toutes les commandes et agents sont installés', async () => {
   const commands = fs.readdirSync(`${tempDir}/.claude/commands`)
   const agents = fs.readdirSync(`${tempDir}/.claude/agents`)
 
@@ -251,95 +251,95 @@ test('all commands and agents are installed', async () => {
 })
 ```
 
-## Test Execution Flow
+## Flux d'exécution de test
 
-### 1. Temporary Environment Setup
-- Creates isolated temp directory
-- Sets environment variables
-- Prevents pollution of real config
+### 1. Configuration d'environnement temporaire
+- Crée un répertoire temp isolé
+- Définit les variables d'environnement
+- Empêche la pollution de la vraie config
 
-### 2. Real CLI Execution
-- Runs actual compiled CLI
-- Uses `--skip` for non-interactive mode
-- Simulates real user experience
+### 2. Exécution CLI réelle
+- Exécute le CLI compilé réel
+- Utilise `--skip` pour mode non-interactif
+- Simule l'expérience utilisateur réelle
 
-### 3. Asynchronous Validation
-- Waits for GitHub downloads
-- Polls for file creation
-- Timeout after 10 seconds
+### 3. Validation asynchrone
+- Attend les téléchargements GitHub
+- Poll pour la création de fichiers
+- Timeout après 10 secondes
 
-### 4. Comprehensive Assertions
-- File existence checks
-- JSON structure validation
-- Content verification
-- Count validation
+### 4. Assertions complètes
+- Vérifications d'existence de fichiers
+- Validation de structure JSON
+- Vérification de contenu
+- Validation de compte
 
-### 5. Cleanup
-- Removes temporary directories
-- Restores environment
-- Frees disk space
+### 5. Nettoyage
+- Supprime les répertoires temporaires
+- Restaure l'environnement
+- Libère l'espace disque
 
-## Test Output
+## Sortie de test
 
-### Success Output
+### Sortie de succès
 ```
 ✓ tests/setup.integration.test.ts (3)
-  ✓ setup command executes successfully (5234ms)
-  ✓ settings.json has correct structure (102ms)
-  ✓ all commands and agents are installed (89ms)
+  ✓ la commande setup s'exécute avec succès (5234ms)
+  ✓ settings.json a la structure correcte (102ms)
+  ✓ toutes les commandes et agents sont installés (89ms)
 
-Test Files  1 passed (1)
-     Tests  3 passed (3)
-  Start at  14:30:45
-  Duration  5.50s
+Fichiers de test  1 réussi (1)
+        Tests  3 réussis (3)
+   Démarrage  14:30:45
+       Durée  5.50s
 ```
 
-### Failure Output
+### Sortie d'échec
 ```
 ✗ tests/setup.integration.test.ts (1)
-  ✗ setup command executes successfully (5234ms)
+  ✗ la commande setup s'exécute avec succès (5234ms)
     AssertionError: expected false to be true
 
-    Expected: true
-    Received: false
+    Attendu: true
+    Reçu: false
 
     at tests/setup.integration.test.ts:45:10
 
-Test Files  1 failed (1)
-     Tests  1 failed | 2 passed (3)
-  Start at  14:32:12
-  Duration  5.48s
+Fichiers de test  1 échoué (1)
+        Tests  1 échoué | 2 réussis (3)
+   Démarrage  14:32:12
+       Durée  5.48s
 ```
 
-## Test-Driven Development Workflow
+## Workflow de développement piloté par les tests
 
-### 1. Write Test First (Optional)
+### 1. Écrire le test d'abord (Optionnel)
 ```typescript
-test('new feature works', async () => {
-  // Test for new feature
+test('nouvelle fonctionnalité fonctionne', async () => {
+  // Test pour nouvelle fonctionnalité
   const result = await newFeature()
   expect(result).toBe(expected)
 })
 ```
 
-### 2. Implement Feature
+### 2. Implémenter la fonctionnalité
 ```typescript
 // src/commands/newFeature.ts
 export async function newFeature() {
-  // Implementation
+  // Implémentation
 }
 ```
 
-### 3. Run Tests
+### 3. Exécuter les tests
 ```bash
 bun test:run
 ```
 
-### 4. Iterate Until Pass
-- Fix failing tests
-- Refactor code
-- Run tests again
-- Repeat until all pass
+### 4. Itérer jusqu'au succès
+- Corriger les tests échoués
+- Refactoriser le code
+- Exécuter les tests à nouveau
+- Répéter jusqu'à ce que tous passent
 
 ### 5. Commit
 ```bash
@@ -347,9 +347,9 @@ git add .
 git commit -m "feat: add new feature"
 ```
 
-## CI/CD Integration
+## Intégration CI/CD
 
-### GitHub Actions Example
+### Exemple GitHub Actions
 ```yaml
 name: Tests
 
@@ -365,105 +365,105 @@ jobs:
       - run: bun test:run
 ```
 
-### Pre-commit Hook
+### Hook Pre-commit
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
 
-echo "Running tests..."
+echo "Exécution des tests..."
 bun test:run
 
 if [ $? -ne 0 ]; then
-  echo "Tests failed. Commit aborted."
+  echo "Tests échoués. Commit annulé."
   exit 1
 fi
 ```
 
-## Debugging Failed Tests
+## Débogage des tests échoués
 
-### Enable Verbose Output
+### Activer la sortie verbeuse
 ```bash
 bun test:run --reporter=verbose
 ```
 
-### Run Single Test
+### Exécuter un seul test
 ```bash
 bun test:run tests/setup.integration.test.ts
 ```
 
-### Add Debug Logs
+### Ajouter des logs de débogage
 ```typescript
-test('debug test', async () => {
-  console.log('Before execution')
+test('test de débogage', async () => {
+  console.log('Avant exécution')
   const result = await someFunction()
-  console.log('Result:', result)
+  console.log('Résultat:', result)
   expect(result).toBe(expected)
 })
 ```
 
-### Preserve Temp Directory
+### Préserver le répertoire temporaire
 ```typescript
 const tempDir = await createTempDir()
-console.log('Temp dir:', tempDir)
-// Don't cleanup - inspect manually
+console.log('Répertoire temp:', tempDir)
+// Ne pas nettoyer - inspecter manuellement
 ```
 
-## Common Test Issues
+## Problèmes de test courants
 
-### Issue: GitHub API Timeout
-**Symptom**: Tests fail after 10 seconds
+### Problème: Timeout API GitHub
+**Symptôme**: Les tests échouent après 10 secondes
 
 **Solution**:
-- Check internet connection
-- Increase timeout in test
-- Use local config instead
+- Vérifier la connexion internet
+- Augmenter le timeout dans le test
+- Utiliser la config locale à la place
 
-### Issue: File Permissions
-**Symptom**: Cannot write to temp directory
+### Problème: Permissions de fichiers
+**Symptôme**: Impossible d'écrire dans le répertoire temp
 
 **Solution**:
 ```bash
 chmod +x dist/cli.js
 ```
 
-### Issue: Existing Config Conflict
-**Symptom**: Tests fail due to existing `~/.claude/`
+### Problème: Conflit de config existante
+**Symptôme**: Les tests échouent à cause de `~/.claude/` existant
 
-**Solution**: Tests use isolated temp directories, not real home
+**Solution**: Les tests utilisent des répertoires temp isolés, pas le home réel
 
-### Issue: JSON Parse Error
-**Symptom**: `SyntaxError: Unexpected token`
+### Problème: Erreur de parsing JSON
+**Symptôme**: `SyntaxError: Unexpected token`
 
-**Solution**: Validate settings.json generation logic
+**Solution**: Valider la logique de génération de settings.json
 
-## Best Practices
+## Meilleures pratiques
 
-### ✅ Do's
-- Always run `bun test:run` after changes
-- Add tests for new features
-- Keep tests fast (< 30s total)
-- Use descriptive test names
-- Clean up temp files
+### ✅ À faire
+- Toujours exécuter `bun test:run` après changements
+- Ajouter des tests pour nouvelles fonctionnalités
+- Garder les tests rapides (< 30s total)
+- Utiliser des noms de test descriptifs
+- Nettoyer les fichiers temp
 
-### ❌ Don'ts
-- Don't skip tests before commit
-- Don't use `test:watch` in CI/CD
-- Don't modify real `~/.claude/` in tests
-- Don't leave debug logs in production
-- Don't ignore test failures
+### ❌ À ne pas faire
+- Ne pas ignorer les tests avant commit
+- Ne pas utiliser `test:watch` en CI/CD
+- Ne pas modifier le vrai `~/.claude/` dans les tests
+- Ne pas laisser des logs de débogage en production
+- Ne pas ignorer les échecs de tests
 
-## Related Files
+## Fichiers associés
 
-- Test Config: `vitest.config.ts`
-- Integration Tests: `tests/setup.integration.test.ts`
-- Package Scripts: `package.json` (test:run)
-- CI Config: `.github/workflows/` (if exists)
+- Config de test: `vitest.config.ts`
+- Tests d'intégration: `tests/setup.integration.test.ts`
+- Scripts de package: `package.json` (test:run)
+- Config CI: `.github/workflows/` (si existe)
 
-## Next Steps After Passing Tests
+## Étapes suivantes après tests réussis
 
-1. ✅ All tests pass
+1. ✅ Tous les tests passent
 2. Build: `bun run build`
-3. Manual smoke test (optional)
-4. Commit changes
-5. Push to repository
-6. Create pull request
+3. Test manuel de fumée (optionnel)
+4. Commit des changements
+5. Push vers le dépôt
+6. Créer une pull request

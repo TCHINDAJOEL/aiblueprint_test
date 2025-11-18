@@ -1,63 +1,63 @@
-# Statusline Workflow
+# Workflow de la Statusline
 
-This diagram illustrates how the custom statusline displays real-time session information.
+Ce diagramme illustre comment la statusline personnalisée affiche les informations de session en temps réel.
 
 ```mermaid
 flowchart TD
-    Start([Claude Code Session Active]) --> HookTrigger[StatusLine Hook Triggered<br/>Every prompt/response]
+    Start([Session Claude Code active]) --> HookTrigger[Hook StatusLine déclenché<br/>À chaque prompt/réponse]
 
-    HookTrigger --> ReadInput[Read Hook Input from stdin<br/>JSON format]
+    HookTrigger --> ReadInput[Lire l'entrée du hook depuis stdin<br/>Format JSON]
 
-    ReadInput --> ParseInput[Parse JSON Input:<br/>- Hook type<br/>- Session data<br/>- Transcript path]
+    ReadInput --> ParseInput[Parser l'entrée JSON:<br/>- Type de hook<br/>- Données de session<br/>- Chemin de transcript]
 
-    ParseInput --> Parallel{Fetch Data<br/>in Parallel}
+    ParseInput --> Parallel{Récupérer les données<br/>en parallèle}
 
-    Parallel --> GitStatus[Fetch Git Status]
-    Parallel --> ParseTranscript[Parse Transcript File]
-    Parallel --> APICall[Call Claude OAuth API]
+    Parallel --> GitStatus[Récupérer le statut Git]
+    Parallel --> ParseTranscript[Parser le fichier de transcript]
+    Parallel --> APICall[Appeler l'API OAuth Claude]
 
     %% GIT STATUS BRANCH
-    GitStatus --> RunGit[Execute: git status --porcelain -b]
+    GitStatus --> RunGit[Exécuter: git status --porcelain -b]
 
-    RunGit --> ParseGit[Parse Git Output:<br/>- Current branch<br/>- Ahead/behind count<br/>- Changed files<br/>- Untracked files]
+    RunGit --> ParseGit[Parser la sortie Git:<br/>- Branche actuelle<br/>- Compteur ahead/behind<br/>- Fichiers modifiés<br/>- Fichiers non suivis]
 
-    ParseGit --> GitData[Git Data Ready:<br/>branch, changes, status]
+    ParseGit --> GitData[Données Git prêtes:<br/>branche, changements, statut]
 
     %% TRANSCRIPT BRANCH
-    ParseTranscript --> ReadFile[Read Transcript JSON]
+    ParseTranscript --> ReadFile[Lire le JSON du transcript]
 
-    ReadFile --> ExtractContext[Extract Context Usage:<br/>- Input tokens<br/>- Output tokens<br/>- Total tokens<br/>- Model used]
+    ReadFile --> ExtractContext[Extraire l'utilisation du contexte:<br/>- Tokens d'entrée<br/>- Tokens de sortie<br/>- Total de tokens<br/>- Modèle utilisé]
 
-    ExtractContext --> CalculateCost[Calculate Session Cost:<br/>Based on model pricing]
+    ExtractContext --> CalculateCost[Calculer le coût de la session:<br/>Basé sur la tarification du modèle]
 
-    CalculateCost --> ContextData[Context Data Ready:<br/>tokens, cost, duration]
+    CalculateCost --> ContextData[Données de contexte prêtes:<br/>tokens, coût, durée]
 
     %% API BRANCH
     APICall --> HTTPRequest[GET api.claude.ai/api/organizations/.../usage]
 
-    HTTPRequest --> ParseAPI[Parse API Response:<br/>- Rate limits<br/>- Current usage<br/>- Percentage used<br/>- Reset time]
+    HTTPRequest --> ParseAPI[Parser la réponse API:<br/>- Limites de taux<br/>- Utilisation actuelle<br/>- Pourcentage utilisé<br/>- Temps de réinitialisation]
 
-    ParseAPI --> UsageData[Usage Data Ready:<br/>limits, percentage]
+    ParseAPI --> UsageData[Données d'utilisation prêtes:<br/>limites, pourcentage]
 
     %% MERGE AND FORMAT
-    GitData --> MergeData[Merge All Data]
+    GitData --> MergeData[Fusionner toutes les données]
     ContextData --> MergeData
     UsageData --> MergeData
 
-    MergeData --> FormatLine1[Format Line 1:<br/>branch | path | model]
+    MergeData --> FormatLine1[Formater Ligne 1:<br/>branche | chemin | modèle]
 
-    FormatLine1 --> FormatLine2[Format Line 2:<br/>cost | duration | tokens | usage%]
+    FormatLine1 --> FormatLine2[Formater Ligne 2:<br/>coût | durée | tokens | usage%]
 
-    FormatLine2 --> ColorFormat[Apply Color Formatting:<br/>- Green: safe usage<br/>- Yellow: moderate<br/>- Red: high usage]
+    FormatLine2 --> ColorFormat[Appliquer le formatage de couleur:<br/>- Vert: utilisation sûre<br/>- Jaune: modéré<br/>- Rouge: utilisation élevée]
 
-    ColorFormat --> Output[Output to stdout:<br/>2 lines with ANSI colors]
+    ColorFormat --> Output[Sortie vers stdout:<br/>2 lignes avec couleurs ANSI]
 
-    Output --> Display[Claude Code Displays:<br/>Statusline in terminal]
+    Output --> Display[Claude Code affiche:<br/>Statusline dans le terminal]
 
-    Display --> NextPrompt{User Sends<br/>Next Prompt?}
+    Display --> NextPrompt{L'utilisateur envoie<br/>le prompt suivant?}
 
-    NextPrompt -->|Yes| HookTrigger
-    NextPrompt -->|No| End([Session Ends])
+    NextPrompt -->|Oui| HookTrigger
+    NextPrompt -->|Non| End([Session terminée])
 
     style Start fill:#e1f5ff
     style End fill:#d4edda
@@ -66,79 +66,79 @@ flowchart TD
     style Display fill:#cfe2ff
 ```
 
-## Statusline Output Format
+## Format de sortie de la Statusline
 
-### Line 1: Context Information
+### Ligne 1: Informations de contexte
 ```
 🌿 main | ~/projects/app | sonnet-4.5
 ```
-- Git branch with icon
-- Current working directory
-- Active model
+- Branche Git avec icône
+- Répertoire de travail actuel
+- Modèle actif
 
-### Line 2: Metrics
+### Ligne 2: Métriques
 ```
 💰 $0.45 | ⏱️  2m 34s | 📊 25K/200K (12%) | 🔥 450/500 (90%)
 ```
-- Session cost
-- Duration
-- Token usage (current/limit)
-- Rate limit percentage
+- Coût de la session
+- Durée
+- Utilisation des tokens (actuel/limite)
+- Pourcentage de limite de taux
 
-## Data Sources
+## Sources de données
 
-### 1. Git Status
-**Command**: `git status --porcelain -b`
+### 1. Statut Git
+**Commande**: `git status --porcelain -b`
 
-**Extracted Info**:
-- Current branch name
-- Ahead/behind remote count
-- Number of changed files
-- Untracked files count
+**Informations extraites**:
+- Nom de la branche actuelle
+- Compteur ahead/behind du remote
+- Nombre de fichiers modifiés
+- Nombre de fichiers non suivis
 
-### 2. Transcript Parsing
-**File**: `.claude/transcript-<session-id>.json`
+### 2. Parsing du Transcript
+**Fichier**: `.claude/transcript-<session-id>.json`
 
-**Extracted Info**:
-- Input tokens per message
-- Output tokens per message
-- Cumulative total
-- Model identifier
+**Informations extraites**:
+- Tokens d'entrée par message
+- Tokens de sortie par message
+- Total cumulé
+- Identifiant du modèle
 
-### 3. Claude OAuth API
+### 3. API OAuth Claude
 **Endpoint**: `https://api.claude.ai/api/organizations/{org_id}/usage`
 
-**Extracted Info**:
-- Daily/hourly rate limits
-- Current usage count
-- Percentage consumed
-- Reset timestamp
+**Informations extraites**:
+- Limites de taux journalières/horaires
+- Compteur d'utilisation actuel
+- Pourcentage consommé
+- Horodatage de réinitialisation
 
-## Performance Optimizations
+## Optimisations de performance
 
-1. **Parallel Execution**: All 3 data sources fetched simultaneously
-2. **Caching**: Git status cached for 1 second
-3. **Error Handling**: Graceful degradation if API fails
-4. **Minimal Processing**: Only parse necessary JSON fields
+1. **Exécution parallèle**: Les 3 sources de données sont récupérées simultanément
+2. **Mise en cache**: Le statut Git est mis en cache pendant 1 seconde
+3. **Gestion des erreurs**: Dégradation élégante si l'API échoue
+4. **Traitement minimal**: Seuls les champs JSON nécessaires sont parsés
 
-## Color Scheme
+## Schéma de couleurs
 
-| Usage % | Color | Meaning |
+| Usage % | Couleur | Signification |
 |---------|-------|---------|
-| 0-50% | Green | Safe |
-| 51-75% | Yellow | Moderate |
-| 76-100% | Red | High |
+| 0-50% | Vert | Sûr |
+| 51-75% | Jaune | Modéré |
+| 76-100% | Rouge | Élevé |
 
-## Related Files
+## Fichiers associés
 
 - Script: `claude-code-config/scripts/statusline/src/index.ts`
 - Package: `claude-code-config/scripts/statusline/package.json`
-- Installer: `src/commands/statusline.ts`
-- Dependencies: `ccusage` (cost calculation)
+- Installateur: `src/commands/statusline.ts`
+- Dépendances: `ccusage` (calcul du coût)
 
 ## Installation
 
-**Standalone**:
+**Autonome**:
 ```bash
 aiblueprint claude-code statusline
 ```
@@ -146,12 +146,12 @@ aiblueprint claude-code statusline
 **Via Setup**:
 ```bash
 aiblueprint claude-code setup
-# Select "Custom Statusline"
+# Sélectionner "Custom Statusline"
 ```
 
-## Requirements
+## Prérequis
 
-- **Bun**: Runtime for statusline script
-- **ccusage**: Token cost calculation
-- **Git**: Repository detection
-- **Claude API**: Rate limit data
+- **Bun**: Runtime pour le script de statusline
+- **ccusage**: Calcul du coût des tokens
+- **Git**: Détection du dépôt
+- **API Claude**: Données de limite de taux

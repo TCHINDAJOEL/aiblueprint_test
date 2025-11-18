@@ -1,462 +1,462 @@
-# AIBlueprint CLI - Architecture & Workflow Diagrams
+# CLI AIBlueprint - Diagrammes d'architecture & de workflow
 
-This folder contains comprehensive Mermaid diagrams documenting all workflows and architectural patterns in the AIBlueprint CLI project.
+Ce dossier contient des diagrammes Mermaid complets documentant tous les workflows et motifs architecturaux du projet CLI AIBlueprint.
 
-## 📋 Table of Contents
+## 📋 Table des matières
 
-1. [Setup Command Workflow](#1-setup-command-workflow)
-2. [Add Hook Workflow](#2-add-hook-workflow)
-3. [Add Command Workflow](#3-add-command-workflow)
-4. [Symlink Workflow](#4-symlink-workflow)
-5. [Pro Command Workflow](#5-pro-command-workflow)
-6. [Statusline Workflow](#6-statusline-workflow)
-7. [Security Hook Flow](#7-security-hook-flow)
-8. [CLI Architecture](#8-cli-architecture)
-9. [Installation Flow](#9-installation-flow)
-10. [Testing Workflow](#10-testing-workflow)
-
----
-
-## Overview
-
-These diagrams provide visual documentation of:
-
-- **User-Facing Workflows**: How users interact with the CLI
-- **Internal Processes**: How the system processes commands
-- **Security Mechanisms**: How security validation works
-- **Data Flows**: How data moves through the system
-- **Testing Strategies**: How the system is validated
-
-All diagrams are written in Mermaid format and can be viewed:
-- On GitHub (automatic rendering)
-- In VS Code (with Mermaid extension)
-- Online at [mermaid.live](https://mermaid.live)
+1. [Workflow de la commande Setup](#1-workflow-de-la-commande-setup)
+2. [Workflow d'ajout de Hook](#2-workflow-dajout-de-hook)
+3. [Workflow d'ajout de commande](#3-workflow-dajout-de-commande)
+4. [Workflow de Symlink](#4-workflow-de-symlink)
+5. [Workflow des commandes Pro](#5-workflow-des-commandes-pro)
+6. [Workflow de Statusline](#6-workflow-de-statusline)
+7. [Flux du Hook de sécurité](#7-flux-du-hook-de-sécurité)
+8. [Architecture du CLI](#8-architecture-du-cli)
+9. [Flux d'installation](#9-flux-dinstallation)
+10. [Workflow de test](#10-workflow-de-test)
 
 ---
 
-## Diagrams
+## Vue d'ensemble
 
-### 1. Setup Command Workflow
-**File**: [`01-setup-workflow.md`](./01-setup-workflow.md)
+Ces diagrammes fournissent une documentation visuelle de:
 
-**Description**: The main setup command that installs all AIBlueprint configurations.
+- **Workflows orientés utilisateur**: Comment les utilisateurs interagissent avec le CLI
+- **Processus internes**: Comment le système traite les commandes
+- **Mécanismes de sécurité**: Comment fonctionne la validation de sécurité
+- **Flux de données**: Comment les données circulent dans le système
+- **Stratégies de test**: Comment le système est validé
 
-**Key Features**:
-- Interactive feature selection
-- GitHub-first with local fallback
-- Conditional feature installation
-- Settings.json merge logic
-- Dependency auto-installation
-
-**Use Cases**:
-- First-time installation
-- Feature updates
-- Configuration refresh
+Tous les diagrammes sont écrits en format Mermaid et peuvent être visualisés:
+- Sur GitHub (rendu automatique)
+- Dans VS Code (avec l'extension Mermaid)
+- En ligne sur [mermaid.live](https://mermaid.live)
 
 ---
 
-### 2. Add Hook Workflow
-**File**: [`02-add-hook-workflow.md`](./02-add-hook-workflow.md)
+## Diagrammes
 
-**Description**: Installing individual Claude Code hooks for enhanced functionality.
+### 1. Workflow de la commande Setup
+**Fichier**: [`01-setup-workflow.md`](./01-setup-workflow.md)
 
-**Key Features**:
-- Hook type validation
-- Project vs global detection
-- Environment variable usage (`$CLAUDE_PROJECT_DIR`)
-- Executable permissions management
+**Description**: La commande setup principale qui installe toutes les configurations AIBlueprint.
 
-**Supported Hooks**:
-- `post-edit-typescript`: TypeScript validation after editing
+**Fonctionnalités clés**:
+- Sélection interactive de fonctionnalités
+- GitHub en premier avec repli local
+- Installation conditionnelle de fonctionnalités
+- Logique de fusion de settings.json
+- Auto-installation des dépendances
 
-**Use Cases**:
-- Adding project-specific hooks
-- Installing validation hooks
-- Setting up CI/CD hooks
-
----
-
-### 3. Add Command Workflow
-**File**: [`03-add-command-workflow.md`](./03-add-command-workflow.md)
-
-**Description**: Installing individual command templates or listing available commands.
-
-**Key Features**:
-- Command discovery (list mode)
-- YAML frontmatter parsing
-- Individual command installation
-- Metadata extraction (description, allowed-tools)
-
-**Available Commands**: 16 pre-configured templates including:
-- `/commit`: Quick commits
-- `/create-pull-request`: PR creation
-- `/deep-code-analysis`: Code review
-- And 13 more...
-
-**Use Cases**:
-- Adding specific commands
-- Browsing available commands
-- Installing custom templates
+**Cas d'usage**:
+- Installation initiale
+- Mises à jour de fonctionnalités
+- Rafraîchissement de configuration
 
 ---
 
-### 4. Symlink Workflow
-**File**: [`04-symlink-workflow.md`](./04-symlink-workflow.md)
+### 2. Workflow d'ajout de Hook
+**Fichier**: [`02-add-hook-workflow.md`](./02-add-hook-workflow.md)
 
-**Description**: Sharing commands and agents between different AI CLI tools.
+**Description**: Installation de hooks Claude Code individuels pour fonctionnalités améliorées.
 
-**Key Features**:
-- Multi-tool support (Claude Code, Codex, OpenCode, FactoryAI)
-- Bidirectional syncing
-- Safety checks for existing directories
-- Backup before replacement
+**Fonctionnalités clés**:
+- Validation de type de hook
+- Détection projet vs global
+- Utilisation de variables d'environnement (`$CLAUDE_PROJECT_DIR`)
+- Gestion des permissions exécutables
 
-**Supported Tools**:
-- Claude Code: Commands + Agents
-- Codex: Commands only
-- OpenCode: Commands only
-- FactoryAI: Commands + Droids
+**Hooks supportés**:
+- `post-edit-typescript`: Validation TypeScript après édition
 
-**Use Cases**:
-- Syncing configs across tools
-- Maintaining single source of truth
-- Cross-tool compatibility
+**Cas d'usage**:
+- Ajout de hooks spécifiques au projet
+- Installation de hooks de validation
+- Configuration de hooks CI/CD
 
 ---
 
-### 5. Pro Command Workflow
-**File**: [`05-pro-command-workflow.md`](./05-pro-command-workflow.md)
+### 3. Workflow d'ajout de commande
+**Fichier**: [`03-add-command-workflow.md`](./03-add-command-workflow.md)
 
-**Description**: Premium features with token-based authentication.
+**Description**: Installation de templates de commandes individuels ou liste des commandes disponibles.
 
-**Key Features**:
-- Token validation via Codeline API
-- GitHub token extraction
-- Private repository access
-- Premium config installation
+**Fonctionnalités clés**:
+- Découverte de commandes (mode liste)
+- Parsing de frontmatter YAML
+- Installation de commande individuelle
+- Extraction de métadonnées (description, allowed-tools)
 
-**Subcommands**:
-- `activate [token]`: Activate premium
-- `status`: Check activation status
-- `setup`: Install premium configs
-- `update`: Refresh premium configs
+**Commandes disponibles**: 16 templates préconfigurés incluant:
+- `/commit`: Commits rapides
+- `/create-pull-request`: Création de PR
+- `/deep-code-analysis`: Revue de code
+- Et 13 autres...
 
-**Premium Features**:
-- Extended command library
-- Advanced agents
-- Enhanced statusline
-- Priority support
-
-**Use Cases**:
-- Activating premium subscription
-- Installing premium features
-- Updating premium configs
+**Cas d'usage**:
+- Ajout de commandes spécifiques
+- Navigation des commandes disponibles
+- Installation de templates personnalisés
 
 ---
 
-### 6. Statusline Workflow
-**File**: [`06-statusline-workflow.md`](./06-statusline-workflow.md)
+### 4. Workflow de Symlink
+**Fichier**: [`04-symlink-workflow.md`](./04-symlink-workflow.md)
 
-**Description**: Real-time session metrics and information display.
+**Description**: Partage de commandes et agents entre différents outils CLI d'IA.
 
-**Key Features**:
-- Parallel data fetching (Git, Context, API)
-- Cost calculation
-- Token usage tracking
-- Rate limit monitoring
+**Fonctionnalités clés**:
+- Support multi-outils (Claude Code, Codex, OpenCode, FactoryAI)
+- Synchronisation bidirectionnelle
+- Vérifications de sécurité pour répertoires existants
+- Sauvegarde avant remplacement
 
-**Data Sources**:
-- Git status (branch, changes)
-- Transcript parsing (tokens, cost)
-- Claude OAuth API (rate limits)
+**Outils supportés**:
+- Claude Code: Commandes + Agents
+- Codex: Commandes uniquement
+- OpenCode: Commandes uniquement
+- FactoryAI: Commandes + Droids
 
-**Display Format**:
-- Line 1: Branch, path, model
-- Line 2: Cost, duration, tokens, usage %
-
-**Use Cases**:
-- Monitoring session costs
-- Tracking token usage
-- Checking rate limits
-- Git branch awareness
+**Cas d'usage**:
+- Synchronisation de configs entre outils
+- Maintien d'une source unique de vérité
+- Compatibilité inter-outils
 
 ---
 
-### 7. Security Hook Flow
-**File**: [`07-security-hook-flow.md`](./07-security-hook-flow.md)
+### 5. Workflow des commandes Pro
+**Fichier**: [`05-pro-command-workflow.md`](./05-pro-command-workflow.md)
 
-**Description**: Comprehensive bash command validation security layer.
+**Description**: Fonctionnalités premium avec authentification par token.
 
-**Key Features**:
-- 700+ line security system
-- 50+ validation rules
-- Command chain parsing
-- Quote-aware splitting
-- Security logging
+**Fonctionnalités clés**:
+- Validation de token via API Codeline
+- Extraction de token GitHub
+- Accès dépôt privé
+- Installation de config premium
 
-**Security Categories**:
-1. Critical commands (dd, mkfs, fdisk)
-2. Privilege escalation (sudo, su)
-3. Network commands (ssh, curl, wget)
-4. Dangerous patterns (pipe to shell, command injection)
-5. rm -rf validation
-6. File write protection
-7. Whitelisted safe commands
+**Sous-commandes**:
+- `activate [token]`: Activer le premium
+- `status`: Vérifier le statut d'activation
+- `setup`: Installer configs premium
+- `update`: Rafraîchir configs premium
 
-**Use Cases**:
-- Preventing destructive commands
-- Blocking privilege escalation
-- Validating file operations
-- Logging security events
+**Fonctionnalités Premium**:
+- Bibliothèque de commandes étendue
+- Agents avancés
+- Statusline améliorée
+- Support prioritaire
 
----
-
-### 8. CLI Architecture
-**File**: [`08-cli-architecture.md`](./08-cli-architecture.md)
-
-**Description**: Overall system architecture and component relationships.
-
-**Key Components**:
-- Entry Point (CLI parser)
-- Command Layer (setup, add, pro, etc.)
-- Utility Layer (GitHub, file installer, config)
-- Configuration Templates
-- Installation Targets
-
-**Architecture Layers**:
-1. Entry Point: Commander.js routing
-2. Commands: Business logic handlers
-3. Utils: Shared functionality
-4. External: GitHub, APIs
-5. Templates: Configuration files
-6. Targets: Installation destinations
-
-**Use Cases**:
-- Understanding system structure
-- Planning new features
-- Debugging issues
-- Onboarding new developers
+**Cas d'usage**:
+- Activation d'abonnement premium
+- Installation de fonctionnalités premium
+- Mise à jour de configs premium
 
 ---
 
-### 9. Installation Flow
-**File**: [`09-installation-flow.md`](./09-installation-flow.md)
+### 6. Workflow de Statusline
+**Fichier**: [`06-statusline-workflow.md`](./06-statusline-workflow.md)
 
-**Description**: Complete end-to-end installation process.
+**Description**: Affichage de métriques et informations de session en temps réel.
 
-**Key Phases**:
-1. Package installation (npm/yarn/pnpm/bun)
-2. Configuration source selection (GitHub/Local)
-3. Feature selection (interactive/skip)
-4. Parallel installation (all features concurrently)
-5. Settings configuration (merge strategy)
-6. Verification & reporting
+**Fonctionnalités clés**:
+- Récupération de données en parallèle (Git, Contexte, API)
+- Calcul de coût
+- Suivi d'utilisation de tokens
+- Surveillance de limite de taux
 
-**Installation Targets**:
-- Commands: `~/.claude/commands/`
+**Sources de données**:
+- Statut Git (branche, changements)
+- Parsing de transcript (tokens, coût)
+- API OAuth Claude (limites de taux)
+
+**Format d'affichage**:
+- Ligne 1: Branche, chemin, modèle
+- Ligne 2: Coût, durée, tokens, usage %
+
+**Cas d'usage**:
+- Surveillance des coûts de session
+- Suivi d'utilisation de tokens
+- Vérification des limites de taux
+- Conscience de branche Git
+
+---
+
+### 7. Flux du Hook de sécurité
+**Fichier**: [`07-security-hook-flow.md`](./07-security-hook-flow.md)
+
+**Description**: Couche de sécurité complète de validation de commandes bash.
+
+**Fonctionnalités clés**:
+- Système de sécurité de 700+ lignes
+- 50+ règles de validation
+- Parsing de chaînes de commandes
+- Découpage conscient des guillemets
+- Journalisation de sécurité
+
+**Catégories de sécurité**:
+1. Commandes critiques (dd, mkfs, fdisk)
+2. Élévation de privilèges (sudo, su)
+3. Commandes réseau (ssh, curl, wget)
+4. Motifs dangereux (pipe vers shell, injection de commande)
+5. Validation de rm -rf
+6. Protection d'écriture de fichiers
+7. Commandes sûres en liste blanche
+
+**Cas d'usage**:
+- Prévention de commandes destructives
+- Blocage d'élévation de privilèges
+- Validation d'opérations de fichiers
+- Journalisation d'événements de sécurité
+
+---
+
+### 8. Architecture du CLI
+**Fichier**: [`08-cli-architecture.md`](./08-cli-architecture.md)
+
+**Description**: Architecture système globale et relations entre composants.
+
+**Composants clés**:
+- Point d'entrée (parser CLI)
+- Couche Commande (setup, add, pro, etc.)
+- Couche Utilitaire (GitHub, installateur de fichiers, config)
+- Templates de configuration
+- Cibles d'installation
+
+**Couches d'architecture**:
+1. Point d'entrée: Routage Commander.js
+2. Commandes: Gestionnaires de logique métier
+3. Utilitaires: Fonctionnalités partagées
+4. Externe: GitHub, APIs
+5. Templates: Fichiers de configuration
+6. Cibles: Destinations d'installation
+
+**Cas d'usage**:
+- Compréhension de la structure système
+- Planification de nouvelles fonctionnalités
+- Débogage de problèmes
+- Intégration de nouveaux développeurs
+
+---
+
+### 9. Flux d'installation
+**Fichier**: [`09-installation-flow.md`](./09-installation-flow.md)
+
+**Description**: Processus d'installation complet de bout en bout.
+
+**Phases clés**:
+1. Installation de package (npm/yarn/pnpm/bun)
+2. Sélection de source de configuration (GitHub/Local)
+3. Sélection de fonctionnalités (interactif/skip)
+4. Installation parallèle (toutes fonctionnalités simultanément)
+5. Configuration de paramètres (stratégie de fusion)
+6. Vérification & rapport
+
+**Cibles d'installation**:
+- Commandes: `~/.claude/commands/`
 - Agents: `~/.claude/agents/`
 - Scripts: `~/.claude/scripts/`
-- Settings: `~/.claude/settings.json`
+- Paramètres: `~/.claude/settings.json`
 
-**Platform Support**:
-- macOS: Full support
-- Linux: Partial support
-- Windows: Limited support
+**Support de plateforme**:
+- macOS: Support complet
+- Linux: Support partiel
+- Windows: Support limité
 
-**Use Cases**:
-- First-time setup
-- Understanding installation process
-- Troubleshooting installation issues
-
----
-
-### 10. Testing Workflow
-**File**: [`10-testing-workflow.md`](./10-testing-workflow.md)
-
-**Description**: Testing strategy and critical development practices.
-
-**Critical Rules**:
-1. **ALWAYS** run `bun test:run` after changes
-2. **NEVER** skip tests before commit
-3. **USE** tests to validate instead of manual testing
-
-**Test Types**:
-- Integration tests (real CLI execution)
-- Settings validation
-- File installation verification
-
-**Test Flow**:
-1. Temporary environment setup
-2. Real CLI execution
-3. Asynchronous validation
-4. Comprehensive assertions
-5. Cleanup
-
-**Use Cases**:
-- Validating code changes
-- Preventing regressions
-- Ensuring quality
-- CI/CD integration
+**Cas d'usage**:
+- Configuration initiale
+- Compréhension du processus d'installation
+- Dépannage de problèmes d'installation
 
 ---
 
-## How to Use These Diagrams
+### 10. Workflow de test
+**Fichier**: [`10-testing-workflow.md`](./10-testing-workflow.md)
 
-### For Developers
+**Description**: Stratégie de test et pratiques de développement critiques.
 
-**Understanding the System**:
-1. Start with [CLI Architecture](#8-cli-architecture) for overview
-2. Deep dive into specific workflows as needed
-3. Reference security and testing for best practices
+**Règles critiques**:
+1. **TOUJOURS** exécuter `bun test:run` après changements
+2. **JAMAIS** ignorer les tests avant commit
+3. **UTILISER** les tests pour valider au lieu de tests manuels
 
-**Implementing New Features**:
-1. Review [CLI Architecture](#8-cli-architecture)
-2. Study similar workflow (e.g., [Add Command](#3-add-command-workflow))
-3. Follow [Testing Workflow](#10-testing-workflow)
-4. Follow patterns from existing implementations
+**Types de tests**:
+- Tests d'intégration (exécution CLI réelle)
+- Validation de settings
+- Vérification d'installation de fichiers
 
-**Debugging Issues**:
-1. Identify affected workflow diagram
-2. Follow flow to locate issue
-3. Check related files listed in diagram
-4. Validate with tests
+**Flux de test**:
+1. Configuration d'environnement temporaire
+2. Exécution CLI réelle
+3. Validation asynchrone
+4. Assertions complètes
+5. Nettoyage
 
-### For Users
-
-**Getting Started**:
-1. Read [Installation Flow](#9-installation-flow)
-2. Understand [Setup Workflow](#1-setup-command-workflow)
-3. Review available commands in [Add Command](#3-add-command-workflow)
-
-**Advanced Usage**:
-1. [Symlink Workflow](#4-symlink-workflow) for cross-tool syncing
-2. [Pro Workflow](#5-pro-command-workflow) for premium features
-3. [Statusline Workflow](#6-statusline-workflow) for metrics
-
-**Security Understanding**:
-1. Review [Security Hook Flow](#7-security-hook-flow)
-2. Understand what commands are blocked/allowed
-3. Check security logs when needed
+**Cas d'usage**:
+- Validation de changements de code
+- Prévention de régressions
+- Assurance qualité
+- Intégration CI/CD
 
 ---
 
-## Viewing Mermaid Diagrams
+## Comment utiliser ces diagrammes
 
-### On GitHub
-Diagrams render automatically when viewing `.md` files on GitHub.
+### Pour les développeurs
 
-### In VS Code
-1. Install [Mermaid Preview](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension
-2. Open diagram file
-3. Click preview button
+**Comprendre le système**:
+1. Commencer avec [Architecture du CLI](#8-architecture-du-cli) pour vue d'ensemble
+2. Approfondir les workflows spécifiques selon besoin
+3. Référencer sécurité et test pour meilleures pratiques
 
-### Online Editor
-1. Visit [mermaid.live](https://mermaid.live)
-2. Copy diagram code
-3. View/edit in browser
+**Implémenter de nouvelles fonctionnalités**:
+1. Examiner [Architecture du CLI](#8-architecture-du-cli)
+2. Étudier workflow similaire (ex: [Ajout de commande](#3-workflow-dajout-de-commande))
+3. Suivre [Workflow de test](#10-workflow-de-test)
+4. Suivre les motifs d'implémentations existantes
 
-### Export as Image
-1. Use [mermaid.live](https://mermaid.live)
-2. Paste diagram code
-3. Click "Export" → PNG/SVG
+**Déboguer les problèmes**:
+1. Identifier le diagramme de workflow affecté
+2. Suivre le flux pour localiser le problème
+3. Vérifier les fichiers associés listés dans le diagramme
+4. Valider avec les tests
+
+### Pour les utilisateurs
+
+**Démarrage**:
+1. Lire [Flux d'installation](#9-flux-dinstallation)
+2. Comprendre [Workflow Setup](#1-workflow-de-la-commande-setup)
+3. Examiner les commandes disponibles dans [Ajout de commande](#3-workflow-dajout-de-commande)
+
+**Usage avancé**:
+1. [Workflow Symlink](#4-workflow-de-symlink) pour sync inter-outils
+2. [Workflow Pro](#5-workflow-des-commandes-pro) pour fonctionnalités premium
+3. [Workflow Statusline](#6-workflow-de-statusline) pour métriques
+
+**Compréhension de la sécurité**:
+1. Examiner [Flux Hook de sécurité](#7-flux-du-hook-de-sécurité)
+2. Comprendre quelles commandes sont bloquées/autorisées
+3. Vérifier les logs de sécurité si nécessaire
 
 ---
 
-## Diagram Conventions
+## Visualisation des diagrammes Mermaid
 
-### Color Coding
+### Sur GitHub
+Les diagrammes se rendent automatiquement lors de la visualisation des fichiers `.md` sur GitHub.
 
-| Color | Meaning | Example |
+### Dans VS Code
+1. Installer l'extension [Mermaid Preview](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
+2. Ouvrir le fichier de diagramme
+3. Cliquer sur le bouton de prévisualisation
+
+### Éditeur en ligne
+1. Visiter [mermaid.live](https://mermaid.live)
+2. Copier le code du diagramme
+3. Voir/éditer dans le navigateur
+
+### Exporter en image
+1. Utiliser [mermaid.live](https://mermaid.live)
+2. Coller le code du diagramme
+3. Cliquer "Export" → PNG/SVG
+
+---
+
+## Conventions des diagrammes
+
+### Code couleur
+
+| Couleur | Signification | Exemple |
 |-------|---------|---------|
-| 🔵 Light Blue | Start/Entry Point | User command input |
-| 🟢 Green | Success/Completion | Operation completed |
-| 🔴 Red | Error/Failure | Validation failed |
-| 🟡 Yellow | Warning/Important | Critical decision |
-| 🔷 Blue | Information/Process | Data processing |
+| 🔵 Bleu clair | Début/Point d'entrée | Entrée commande utilisateur |
+| 🟢 Vert | Succès/Complétion | Opération terminée |
+| 🔴 Rouge | Erreur/Échec | Validation échouée |
+| 🟡 Jaune | Avertissement/Important | Décision critique |
+| 🔷 Bleu | Information/Processus | Traitement de données |
 
-### Node Shapes
+### Formes de nœud
 
-| Shape | Meaning |
+| Forme | Signification |
 |-------|---------|
-| Rounded Rectangle | Process/Action |
-| Diamond | Decision Point |
-| Circle | Start/End |
-| Rectangle | Data/Entity |
-| Hexagon | External Service |
+| Rectangle arrondi | Processus/Action |
+| Losange | Point de décision |
+| Cercle | Début/Fin |
+| Rectangle | Données/Entité |
+| Hexagone | Service externe |
 
-### Arrow Types
+### Types de flèche
 
-| Arrow | Meaning |
+| Flèche | Signification |
 |-------|---------|
-| `-->` | Standard flow |
-| `-.->` | Optional/Alternative flow |
-| `==>` | Important/Priority flow |
+| `-->` | Flux standard |
+| `-.->` | Flux optionnel/alternatif |
+| `==>` | Flux important/prioritaire |
 
 ---
 
-## Maintaining These Diagrams
+## Maintenance de ces diagrammes
 
-### When to Update
+### Quand mettre à jour
 
-Update diagrams when:
-- Adding new commands or features
-- Changing workflow logic
-- Modifying architecture
-- Adding/removing dependencies
-- Changing security rules
+Mettre à jour les diagrammes quand:
+- Ajout de nouvelles commandes ou fonctionnalités
+- Changement de logique de workflow
+- Modification d'architecture
+- Ajout/suppression de dépendances
+- Changement de règles de sécurité
 
-### How to Update
+### Comment mettre à jour
 
-1. Edit the `.md` file
-2. Modify Mermaid code between ` ```mermaid ` and ` ``` `
-3. Preview changes
-4. Run tests: `bun test:run`
-5. Commit with descriptive message
+1. Éditer le fichier `.md`
+2. Modifier le code Mermaid entre ` ```mermaid ` et ` ``` `
+3. Prévisualiser les changements
+4. Exécuter les tests: `bun test:run`
+5. Commit avec message descriptif
 
-### Diagram Style Guide
+### Guide de style des diagrammes
 
-- Keep diagrams focused (one workflow per file)
-- Use consistent naming
-- Add comments for complex logic
-- Include related files section
-- Update table of contents in README
-
----
-
-## Related Documentation
-
-- Main README: [`../README.md`](../README.md)
-- Claude Instructions: [`../CLAUDE.md`](../CLAUDE.md)
-- Package Config: [`../package.json`](../package.json)
-- TypeScript Config: [`../tsconfig.json`](../tsconfig.json)
+- Garder les diagrammes focalisés (un workflow par fichier)
+- Utiliser un nommage cohérent
+- Ajouter des commentaires pour logique complexe
+- Inclure section fichiers associés
+- Mettre à jour la table des matières dans README
 
 ---
 
-## Contributing
+## Documentation associée
 
-When adding new diagrams:
-
-1. Follow numbering convention: `XX-name.md`
-2. Include description and key features
-3. Add to table of contents in this README
-4. Use consistent Mermaid syntax
-5. Add color coding for clarity
-6. Include "Related Files" section
-7. Test rendering on GitHub
+- README principal: [`../README.md`](../README.md)
+- Instructions Claude: [`../CLAUDE.md`](../CLAUDE.md)
+- Config Package: [`../package.json`](../package.json)
+- Config TypeScript: [`../tsconfig.json`](../tsconfig.json)
 
 ---
 
-## Questions or Issues?
+## Contribution
 
-- Check existing diagrams for similar patterns
-- Review related source files
-- Consult CLAUDE.md for development guidelines
-- Open issue on GitHub for diagram improvements
+Lors de l'ajout de nouveaux diagrammes:
+
+1. Suivre la convention de numérotation: `XX-nom.md`
+2. Inclure description et fonctionnalités clés
+3. Ajouter à la table des matières dans ce README
+4. Utiliser syntaxe Mermaid cohérente
+5. Ajouter code couleur pour clarté
+6. Inclure section "Fichiers associés"
+7. Tester le rendu sur GitHub
 
 ---
 
-**Last Updated**: 2025-11-18
+## Questions ou problèmes?
 
-**Maintained By**: AIBlueprint CLI Team
+- Vérifier les diagrammes existants pour motifs similaires
+- Examiner les fichiers source associés
+- Consulter CLAUDE.md pour directives de développement
+- Ouvrir une issue sur GitHub pour améliorations de diagrammes
 
-**License**: Same as main project
+---
+
+**Dernière mise à jour**: 2025-11-18
+
+**Maintenu par**: Équipe CLI AIBlueprint
+
+**Licence**: Identique au projet principal
